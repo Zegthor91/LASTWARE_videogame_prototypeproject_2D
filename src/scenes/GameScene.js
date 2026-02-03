@@ -76,17 +76,10 @@ class GameScene extends Phaser.Scene {
         
         // Passage indicator
         const passageY = GAME_CONSTANTS.CORRIDOR.PASSAGE_Y;
-        this.add.rectangle(passageY, passageY, 8, 54, 0x00ff00, 0.4);
+        this.add.rectangle(GAME_CONSTANTS.CORRIDOR.CENTER, passageY, 8, 54, 0x00ff00, 0.4);
         
-        this.add.text(360, passageY - 10, '→', { fontSize: '28px', fill: '#ffff00', fontStyle: 'bold' });
-        this.add.text(420, passageY - 10, '←', { fontSize: '28px', fill: '#ffff00', fontStyle: 'bold' });
-        this.add.text(405, passageY - 35, 'PASSAGE', { 
-            fontSize: '14px', 
-            fill: '#ffff00', 
-            fontStyle: 'bold',
-            backgroundColor: '#000000',
-            padding: { x: 5, y: 3 }
-        });
+        this.add.text(360, passageY - 10, 'RIGHT', { fontSize: '20px', fill: '#ffff00', fontStyle: 'bold' });
+        this.add.text(420, passageY - 10, 'LEFT', { fontSize: '20px', fill: '#ffff00', fontStyle: 'bold' });
         
         // Labels
         this.add.text(275, 30, 'ENEMIES', {
@@ -122,23 +115,15 @@ class GameScene extends Phaser.Scene {
     }
     
     _spawnInitialWaves() {
-        // Horde 1
-        setTimeout(() => this._spawnHorde(1), GAME_CONSTANTS.SPAWN.INITIAL_HORDE_1);
-        // Horde 2
-        setTimeout(() => this._spawnHorde(2), GAME_CONSTANTS.SPAWN.INITIAL_HORDE_2);
-        // Horde 3
-        setTimeout(() => this._spawnHorde(3), GAME_CONSTANTS.SPAWN.INITIAL_HORDE_3);
-        
-        // Initial bonuses
         setTimeout(() => {
-            const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MIN, GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MAX);
-            this.bonuses.push(new Bonus(this, x, 50, this.wave));
-        }, GAME_CONSTANTS.SPAWN.INITIAL_BONUS_1);
-        
+            this.enemies.push(new Enemy(this, 250, 50));
+        }, 100);
         setTimeout(() => {
-            const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MIN, GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MAX);
-            this.bonuses.push(new Bonus(this, x, 50, this.wave));
-        }, GAME_CONSTANTS.SPAWN.INITIAL_BONUS_2);
+            this.enemies.push(new Enemy(this, 300, 50));
+        }, 700);
+        setTimeout(() => {
+            this.bonuses.push(new Bonus(this, 550, 50, this.wave));
+        }, 2000);
     }
     
     // ==================== SPAWNING METHODS ====================
@@ -362,7 +347,8 @@ class GameScene extends Phaser.Scene {
         // Player movement
         if (this.cursors.left.isDown) {
             this.player.move(-1);
-        } else if (this.cursors.right.isDown) {
+        }
+        if (this.cursors.right.isDown) {
             this.player.move(1);
         }
         

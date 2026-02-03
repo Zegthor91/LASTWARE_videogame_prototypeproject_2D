@@ -94,7 +94,7 @@ const GAME_CONSTANTS = {
     
     // ==================== SPAWN TIMINGS ====================
     SPAWN: {
-        ENEMY_SPACING: 600,  // milliseconds between enemies in horde
+        ENEMY_SPACING: 700,  // milliseconds between enemies in horde
         BONUS_DELAY: 1200,   // milliseconds after horde spawn
         INITIAL_HORDE_1: 100,
         INITIAL_HORDE_2: 3000,
