@@ -10,6 +10,6 @@ gameConfig.scene = GameScene;
 // Create and start the game
 const game = new Phaser.Game(gameConfig);
 
-console.log("🎮 Last War - Game Started!");
-console.log("📝 Use ← → to move, bullets auto-fire");
-console.log("🎯 Collect bonuses in right corridor!");
+console.log("Last War - Game Started!");
+console.log("Use left/right arrows to move, bullets auto-fire");
+console.log("Collect bonuses in right corridor!");

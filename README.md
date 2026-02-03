@@ -1,8 +1,8 @@
-# 🎮 Last War - Shooter Game
+# Last War - Shooter Game
 
 A Phaser.js-based shoot'em up game with progressive difficulty and strategic corridor gameplay.
 
-## 🚀 Features
+## Features
 
 - **Dual Corridor System**: Enemies on the left, bonuses on the right
 - **Progressive Difficulty**: Enemy count and spawn rate increase with waves
@@ -10,7 +10,7 @@ A Phaser.js-based shoot'em up game with progressive difficulty and strategic cor
 - **Bonus System**: Collectibles that grow in value as you progress
 - **Wave-based Gameplay**: Survive increasingly difficult enemy hordes
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 last-war-game/
@@ -33,7 +33,7 @@ last-war-game/
 └── assets/                # (Future: images, sounds)
 ```
 
-## 🎯 Design Principles
+## Design Principles
 
 ### KISS (Keep It Simple, Stupid)
 
@@ -57,12 +57,12 @@ last-war-game/
    - Clean up
    - Spawn new waves
 
-## 🎮 Gameplay
+## Gameplay
 
 ### Controls
-- **←** Left arrow: Move left
-- **→** Right arrow: Move right
-- **Auto-fire**: Bullets fire automatically
+- Left arrow: Move left
+- Right arrow: Move right
+- Auto-fire: Bullets fire automatically
 
 ### Objective
 - Survive as many waves as possible
@@ -81,7 +81,7 @@ last-war-game/
 | 16-20| 6            | 3.2s           | +5          |
 | 21+  | 6            | 3.0s           | +10         |
 
-## 🛠️ Technical Details
+## Technical Details
 
 ### Technologies
 - **Phaser 3.70.0**: Game framework
@@ -94,13 +94,13 @@ last-war-game/
 - Object pooling ready (future optimization)
 
 ### Code Quality
-- ✅ Clear naming conventions
-- ✅ Comprehensive comments
-- ✅ Modular architecture
-- ✅ KISS principle throughout
-- ✅ No over-engineering
+- Clear naming conventions
+- Comprehensive comments
+- Modular architecture
+- KISS principle throughout
+- No over-engineering
 
-## 🚀 How to Run
+## How to Run
 
 1. **Simple HTTP Server** (recommended):
    ```bash
@@ -120,29 +120,29 @@ last-war-game/
    - Install "Live Server" extension
    - Right-click `index.html` → "Open with Live Server"
 
-## 📈 Future Enhancements
+## Future Enhancements
 
 ### Easy (1-2 hours)
-- [ ] Sound effects (shoot, explosion, collect)
-- [ ] Background music
-- [ ] Particle effects for explosions
-- [ ] Screen shake on hit
+- Sound effects (shoot, explosion, collect)
+- Background music
+- Particle effects for explosions
+- Screen shake on hit
 
 ### Medium (1 day)
-- [ ] Boss enemies every 5 waves
-- [ ] Power-ups (rapid fire, shield, spread shot)
-- [ ] High score persistence (localStorage)
-- [ ] Pause menu
+- Boss enemies every 5 waves
+- Power-ups (rapid fire, shield, spread shot)
+- High score persistence (localStorage)
+- Pause menu
 
 ### Advanced (3-5 days)
-- [ ] Multiple player ships to choose from
-- [ ] Achievement system
-- [ ] Campaign mode with levels
-- [ ] Multiplayer co-op
-- [ ] Mobile touch controls
-- [ ] Sprite-based graphics
+- Multiple player ships to choose from
+- Achievement system
+- Campaign mode with levels
+- Multiplayer co-op
+- Mobile touch controls
+- Sprite-based graphics
 
-## 🔧 Configuration
+## Configuration
 
 All game parameters can be tuned in `src/config/Constants.js`:
 
@@ -159,7 +159,7 @@ WAVES: {
 }
 ```
 
-## 📝 Code Examples
+## Code Examples
 
 ### Adding a New Enemy Type
 
@@ -188,7 +188,7 @@ class PowerUp {
 }
 ```
 
-## 🐛 Debugging
+## Debugging
 
 Enable physics debug mode in `src/config/GameConfig.js`:
 
@@ -198,14 +198,14 @@ arcade: {
 }
 ```
 
-## 📄 License
+## License
 
 Free to use and modify for educational purposes.
 
-## 👨‍💻 Author
+## Author
 
 Created following professional Phaser.js and JavaScript best practices.
 
 ---
 
-**Built with ❤️ using Phaser.js and the KISS principle**
+Built with Phaser.js and the KISS principle

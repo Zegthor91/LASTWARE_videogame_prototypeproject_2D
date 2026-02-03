@@ -27,7 +27,7 @@ class GameScene extends Phaser.Scene {
     }
     
     create() {
-        console.log("🎮 Game Scene Created");
+        console.log("Game Scene Created");
         
         this._createBackground();
         this._createBarriers();
@@ -89,12 +89,12 @@ class GameScene extends Phaser.Scene {
         });
         
         // Labels
-        this.add.text(275, 30, '⚔️ ENEMIES', {
+        this.add.text(275, 30, 'ENEMIES', {
             fontSize: '20px', fill: '#ff0000', fontStyle: 'bold',
             stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5);
         
-        this.add.text(525, 30, '🎁 BONUS', {
+        this.add.text(525, 30, 'BONUS', {
             fontSize: '20px', fill: '#00ff00', fontStyle: 'bold',
             stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5);
@@ -325,7 +325,7 @@ class GameScene extends Phaser.Scene {
         // Update UI
         document.getElementById('ui-overlay').innerHTML = `
             <div style="text-align: center;">
-                <div style="color: #ff0000; font-size: 36px;">💀 GAME OVER! 💀</div>
+                <div style="color: #ff0000; font-size: 36px;">GAME OVER!</div>
                 <div style="font-size: 20px; margin-top: 10px;">
                     Score: ${this.score} | Wave: ${this.wave}
                 </div>
