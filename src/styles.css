@@ -1,0 +1,54 @@
+/* ==================== GLOBAL STYLES ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+}
+
+/* ==================== GAME CONTAINER ==================== */
+#game-container {
+    border: 6px solid #ff0000;
+    border-radius: 10px;
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
+}
+
+/* ==================== UI OVERLAY ==================== */
+#ui-overlay {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 1000;
+    border: 2px solid #ffd700;
+}
+
+.stat {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.army-stat { color: #00ff00; }
+.wave-stat { color: #ffff00; }
+.score-stat { color: #ff00ff; }
+
+/* ==================== GAME OVER STYLES ==================== */
+.game-over {
+    background: rgba(255, 0, 0, 0.9) !important;
+    border-color: #ffff00 !important;
+}

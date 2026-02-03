@@ -1,0 +1,24 @@
+{
+  "name": "last-war-shooter",
+  "version": "1.0.0",
+  "description": "A Phaser.js shoot'em up game with progressive difficulty",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "npx http-server -p 8000 -o",
+    "serve": "python -m http.server 8000"
+  },
+  "keywords": [
+    "phaser",
+    "game",
+    "shooter",
+    "javascript",
+    "html5"
+  ],
+  "author": "Last War Dev Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last War - Shooter Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.js"></script>
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+    <div id="ui-overlay">
+        <span class="stat army-stat">👥 Army: <span id="armyCount">1</span></span> | 
+        <span class="stat wave-stat">🌊 Wave: <span id="waveCount">1</span></span> | 
+        <span class="stat score-stat">💎 Score: <span id="scoreCount">0</span></span>
+    </div>
+    
+    <div id="game-container"></div>
+    
+    <!-- Game Configuration -->
+    <script src="src/config/GameConfig.js"></script>
+    <script src="src/config/Constants.js"></script>
+    
+    <!-- Utilities -->
+    <script src="src/utils/CollisionUtils.js"></script>
+    
+    <!-- Entities -->
+    <script src="src/entities/Player.js"></script>
+    <script src="src/entities/Enemy.js"></script>
+    <script src="src/entities/Bullet.js"></script>
+    <script src="src/entities/Bonus.js"></script>
+    
+    <!-- Scenes -->
+    <script src="src/scenes/GameScene.js"></script>
+    
+    <!-- Main Game Entry Point -->
+    <script src="src/main.js"></script>
+</body>
+</html>
