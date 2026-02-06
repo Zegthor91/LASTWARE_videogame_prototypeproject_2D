@@ -20,9 +20,10 @@ class Player {
     /**
      * Move player horizontally
      * @param {number} direction - -1 for left, 1 for right
+     * @param {number} speedMultiplier - Optional speed multiplier (default 1)
      */
-    move(direction) {
-        const newX = this.x + (direction * GAME_CONSTANTS.PLAYER.SPEED);
+    move(direction, speedMultiplier = 1) {
+        const newX = this.x + (direction * GAME_CONSTANTS.PLAYER.SPEED * speedMultiplier);
 
         // Check if player is in passage zone (can cross barrier)
         if (CollisionUtils.isInPassage(this.y)) {

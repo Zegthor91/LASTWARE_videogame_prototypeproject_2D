@@ -226,6 +226,18 @@ const GameSceneCollisions = {
 
             // Show power-up message
             GameSceneEffects.showPowerUpMessage(scene, 'CLONE!', GAME_CONSTANTS.POWERUP.CLONE.COLOR);
+        } else if (powerUp.type === 'SPEED_BOOST') {
+            scene.speedBoostActive = true;
+            scene.speedBoostTimer = duration;
+
+            // Show power-up message
+            GameSceneEffects.showPowerUpMessage(scene, 'SPEED BOOST!', GAME_CONSTANTS.POWERUP.SPEED_BOOST.COLOR);
+        } else if (powerUp.type === 'RAPID_FIRE') {
+            scene.rapidFireActive = true;
+            scene.rapidFireTimer = duration;
+
+            // Show power-up message
+            GameSceneEffects.showPowerUpMessage(scene, 'RAPID FIRE!', GAME_CONSTANTS.POWERUP.RAPID_FIRE.COLOR);
         }
 
         // Check for combo (both power-ups active)

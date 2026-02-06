@@ -9,13 +9,32 @@
     <link rel="stylesheet" href="src/styles.css">
 </head>
 <body>
-    <div id="ui-overlay">
-        <span class="stat army-stat">Army: <span id="armyCount">1</span></span> |
-        <span class="stat wave-stat">Wave: <span id="waveCount">1</span></span> |
-        <span class="stat score-stat">Score: <span id="scoreCount">0</span></span>
+    <!-- Left Panel: Stats + Power-ups -->
+    <div id="left-panel">
+        <div id="stats-display">
+            <div class="stat-item army-stat">
+                <span class="stat-label">Army</span>
+                <span class="stat-value" id="armyCount">1</span>
+            </div>
+            <div class="stat-item wave-stat">
+                <span class="stat-label">Wave</span>
+                <span class="stat-value" id="waveCount">1</span>
+            </div>
+            <div class="stat-item score-stat">
+                <span class="stat-label">Score</span>
+                <span class="stat-value" id="scoreCount">0</span>
+            </div>
+        </div>
+        <div id="powerups-display"></div>
     </div>
 
-    <div id="powerups-display" style="position: fixed; top: 50px; left: 10px; z-index: 1000; display: flex; flex-direction: column;"></div>
+    <!-- Right Panel: Game Timer -->
+    <div id="right-panel">
+        <div id="timer-display">
+            <span class="timer-label">Time</span>
+            <span class="timer-value" id="gameTime">0:00</span>
+        </div>
+    </div>
 
     <div id="game-container"></div>
     

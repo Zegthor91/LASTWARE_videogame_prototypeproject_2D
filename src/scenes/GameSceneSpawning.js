@@ -244,17 +244,21 @@ const GameSceneSpawning = {
 
         if (Math.random() < powerUpChance) {
             setTimeout(() => {
-                // Randomly choose between TRIPLE_SHOT, BIG_BULLETS, SHIELD_TRAP, and CLONE
+                // Randomly choose between all 6 power-ups
                 const rand = Math.random();
                 let powerUpType;
-                if (rand < 0.25) {
+                if (rand < 0.167) {
                     powerUpType = 'TRIPLE_SHOT';
-                } else if (rand < 0.50) {
+                } else if (rand < 0.334) {
                     powerUpType = 'BIG_BULLETS';
-                } else if (rand < 0.75) {
+                } else if (rand < 0.501) {
                     powerUpType = 'SHIELD_TRAP';
-                } else {
+                } else if (rand < 0.668) {
                     powerUpType = 'CLONE';
+                } else if (rand < 0.835) {
+                    powerUpType = 'SPEED_BOOST';
+                } else {
+                    powerUpType = 'RAPID_FIRE';
                 }
 
                 // Randomly choose between left and right bonus corridors

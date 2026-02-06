@@ -22,33 +22,112 @@ body {
     box-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
 }
 
-/* ==================== UI OVERLAY ==================== */
-#ui-overlay {
+/* ==================== LEFT PANEL: STATS + POWER-UPS ==================== */
+#left-panel {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 15px 30px;
-    border-radius: 10px;
-    font-size: 20px;
-    font-weight: bold;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
     z-index: 1000;
-    border: 2px solid #ffd700;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.stat {
-    display: inline-block;
-    margin: 0 10px;
+#stats-display {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 
-.army-stat { color: #00ff00; }
-.wave-stat { color: #ffff00; }
-.score-stat { color: #ff00ff; }
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 150px;
+}
+
+.stat-label {
+    color: #ffffff;
+    margin-right: 15px;
+}
+
+.stat-value {
+    font-size: 22px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid;
+}
+
+.army-stat .stat-value {
+    color: #00ff00;
+    border-color: #00ff00;
+}
+
+.wave-stat .stat-value {
+    color: #ffff00;
+    border-color: #ffff00;
+}
+
+.score-stat .stat-value {
+    color: #ff00ff;
+    border-color: #ff00ff;
+}
+
+#powerups-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ==================== RIGHT PANEL: TIMER ==================== */
+#right-panel {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+#timer-display {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    border: 3px solid #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    text-align: center;
+}
+
+.timer-label {
+    display: block;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.timer-value {
+    display: block;
+    color: #00ffff;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid #00ffff;
+}
 
 /* ==================== GAME OVER STYLES ==================== */
-.game-over {
-    background: rgba(255, 0, 0, 0.9) !important;
-    border-color: #ffff00 !important;
+#game-over-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
 }

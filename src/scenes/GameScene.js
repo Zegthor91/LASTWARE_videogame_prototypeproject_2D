@@ -13,6 +13,7 @@ class GameScene extends Phaser.Scene {
         this.playerArmy = GAME_CONSTANTS.PLAYER.STARTING_ARMY;
         this.score = 0;
         this.wave = 1;
+        this.gameTime = 0; // Game timer in milliseconds
 
         // Entity arrays
         this.player = null;
@@ -38,10 +39,17 @@ class GameScene extends Phaser.Scene {
         this.shieldGraphics = null; // Visual shield around player
         this.cloneActive = false;
         this.cloneTimer = 0;
+        this.speedBoostActive = false;
+        this.speedBoostTimer = 0;
+        this.rapidFireActive = false;
+        this.rapidFireTimer = 0;
     }
 
     create() {
         console.log("Game Scene Created");
+
+        // Clean up any previous game over UI
+        GameSceneUI.cleanupGameOver();
 
         // Setup scene (delegated to GameSceneSetup module)
         GameSceneSetup.createBackground(this);
@@ -53,6 +61,7 @@ class GameScene extends Phaser.Scene {
 
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         // Initial spawns (delegated to GameSceneSpawning module)
         GameSceneSpawning.spawnInitialWaves(this);
@@ -62,9 +71,22 @@ class GameScene extends Phaser.Scene {
     }
 
     update(time, delta) {
+        // Check for restart when game is over
+        if (this.gameState === 'over') {
+            if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+                // Complete page reload to ensure everything is cleaned up
+                window.location.reload();
+            }
+            return;
+        }
+
         if (this.gameState !== 'playing') return;
 
         const dt = delta / 1000; // Convert to seconds
+
+        // Update game timer
+        this.gameTime += delta;
+        GameSceneUI.updateGameTime(this);
 
         // Update stars
         this.updateStars(dt);
@@ -107,11 +129,16 @@ class GameScene extends Phaser.Scene {
     }
 
     handlePlayerMovement() {
+        // Apply speed boost multiplier if active
+        const speedMultiplier = this.speedBoostActive
+            ? GAME_CONSTANTS.POWERUP.SPEED_BOOST.SPEED_MULTIPLIER
+            : 1;
+
         if (this.cursors.left.isDown) {
-            this.player.move(-1);
+            this.player.move(-1, speedMultiplier);
         }
         if (this.cursors.right.isDown) {
-            this.player.move(1);
+            this.player.move(1, speedMultiplier);
         }
     }
 
@@ -119,7 +146,12 @@ class GameScene extends Phaser.Scene {
         this.shootTimer += delta;
 
         // Calculate dynamic fire rate based on player army
-        const currentFireRate = GameSceneSpawning.calculateFireRate(this.playerArmy);
+        let currentFireRate = GameSceneSpawning.calculateFireRate(this.playerArmy);
+
+        // Apply rapid fire multiplier if active
+        if (this.rapidFireActive) {
+            currentFireRate *= GAME_CONSTANTS.POWERUP.RAPID_FIRE.FIRE_RATE_MULTIPLIER;
+        }
 
         if (this.shootTimer > currentFireRate) {
             GameSceneSpawning.shootBullet(this);
@@ -248,6 +280,26 @@ class GameScene extends Phaser.Scene {
                     if (clone.graphics) clone.graphics.destroy();
                 });
                 this.clones = [];
+                GameSceneUI.updateUI(this);
+            }
+        }
+
+        // Speed Boost timer
+        if (this.speedBoostActive) {
+            this.speedBoostTimer -= delta;
+            if (this.speedBoostTimer <= 0) {
+                this.speedBoostActive = false;
+                this.speedBoostTimer = 0;
+                GameSceneUI.updateUI(this);
+            }
+        }
+
+        // Rapid Fire timer
+        if (this.rapidFireActive) {
+            this.rapidFireTimer -= delta;
+            if (this.rapidFireTimer <= 0) {
+                this.rapidFireActive = false;
+                this.rapidFireTimer = 0;
                 GameSceneUI.updateUI(this);
             }
         }

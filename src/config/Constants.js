@@ -153,6 +153,20 @@ const GAME_CONSTANTS = {
             ICON: 'CLONE',
             OFFSET_X: 60, // Distance from player in pixels
             ALPHA: 0.7 // Clone transparency
+        },
+
+        // Speed Boost power-up
+        SPEED_BOOST: {
+            COLOR: 0xffff00, // Yellow
+            ICON: 'SPEED',
+            SPEED_MULTIPLIER: 1.75 // 1.75x movement speed
+        },
+
+        // Rapid Fire power-up
+        RAPID_FIRE: {
+            COLOR: 0xff0000, // Red
+            ICON: 'RAPID',
+            FIRE_RATE_MULTIPLIER: 0.5 // 2x faster shooting (50% of normal fire rate)
         }
     },
     
