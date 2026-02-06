@@ -5,19 +5,21 @@
  */
 
 class Bullet {
-    constructor(scene, x, y, damage = 1) {
+    constructor(scene, x, y, damage = 1, sizeMultiplier = 1) {
         this.scene = scene;
         this.x = x;
         this.y = y;
-        this.width = GAME_CONSTANTS.BULLET.WIDTH;
-        this.height = GAME_CONSTANTS.BULLET.HEIGHT;
         this.speed = GAME_CONSTANTS.BULLET.SPEED; // Negative = upward
         this.damage = damage; // Damage dealt to enemies
 
+        // Apply size multiplier from Big Bullets power-up
+        this.width = GAME_CONSTANTS.BULLET.WIDTH * sizeMultiplier;
+        this.height = GAME_CONSTANTS.BULLET.HEIGHT * sizeMultiplier;
+
         // Visual size scales with damage (max 2x)
-        const sizeScale = Math.min(1 + (damage - 1) * 0.1, 2);
-        const visualWidth = this.width * sizeScale;
-        const visualHeight = this.height * sizeScale;
+        const damageScale = Math.min(1 + (damage - 1) * 0.1, 2);
+        const visualWidth = this.width * damageScale;
+        const visualHeight = this.height * damageScale;
 
         // Color intensity increases with damage
         const colorIntensity = Math.min(damage * 20, 255);
@@ -33,22 +35,34 @@ class Bullet {
     
     /**
      * Update bullet position
+     * Supports diagonal movement for Triple Shot power-up
      * @param {number} dt - Delta time in seconds
      */
     update(dt) {
-        this.y += this.speed * dt;
-        
-        // Update graphics
-        this.graphics.y = this.y;
-        this.hitbox.y = this.y;
+        // Use velocity components if set (for diagonal bullets), otherwise use default upward movement
+        if (this.velocityX !== undefined && this.velocityY !== undefined) {
+            this.x += this.velocityX * dt;
+            this.y += this.velocityY * dt;
+            this.graphics.x = this.x;
+            this.graphics.y = this.y;
+            this.hitbox.x = this.x;
+            this.hitbox.y = this.y;
+        } else {
+            this.y += this.speed * dt;
+
+            // Update graphics
+            this.graphics.y = this.y;
+            this.hitbox.y = this.y;
+        }
     }
     
     /**
      * Check if bullet is off screen
+     * Accounts for diagonal bullets going off sides
      * @returns {boolean}
      */
     isOffScreen() {
-        return this.y < -50;
+        return this.y < -50 || this.x < -50 || this.x > 850;
     }
     
     /**

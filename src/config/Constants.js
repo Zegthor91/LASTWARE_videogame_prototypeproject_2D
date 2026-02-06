@@ -95,6 +95,39 @@ const GAME_CONSTANTS = {
             { maxWave: Infinity, value: 10, color: 0xffff00, text: '+10' }
         ]
     },
+
+    // ==================== POWER-UP SETTINGS ====================
+    POWERUP: {
+        DURATION: 15000, // 15 seconds in milliseconds
+        SPAWN_CHANCE: 0.08, // 8% chance per wave
+
+        // Triple Shot power-up
+        TRIPLE_SHOT: {
+            COLOR: 0xff00ff, // Magenta
+            ANGLE_SPREAD: 15, // Degrees from center
+            ICON: '3X'
+        },
+
+        // Big Bullets power-up
+        BIG_BULLETS: {
+            COLOR: 0x00ffff, // Cyan
+            SIZE_MULTIPLIER: 2.5, // 2.5x bullet size
+            ICON: 'BIG'
+        },
+
+        // Combo bonus when both active
+        COMBO: {
+            COLOR: 0xffffff, // White
+            ICON: 'COMBO!'
+        },
+
+        // Shield Trap power-up
+        SHIELD_TRAP: {
+            COLOR: 0xffaa00, // Orange
+            ICON: 'SHIELD',
+            SHIELD_RADIUS: 35 // Visual shield radius around player
+        }
+    },
     
     // ==================== WAVE PROGRESSION ====================
     WAVES: {

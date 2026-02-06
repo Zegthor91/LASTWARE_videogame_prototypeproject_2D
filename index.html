@@ -10,11 +10,13 @@
 </head>
 <body>
     <div id="ui-overlay">
-        <span class="stat army-stat">Army: <span id="armyCount">1</span></span> | 
-        <span class="stat wave-stat">Wave: <span id="waveCount">1</span></span> | 
+        <span class="stat army-stat">Army: <span id="armyCount">1</span></span> |
+        <span class="stat wave-stat">Wave: <span id="waveCount">1</span></span> |
         <span class="stat score-stat">Score: <span id="scoreCount">0</span></span>
     </div>
-    
+
+    <div id="powerups-display" style="position: fixed; top: 50px; left: 10px; z-index: 1000; display: flex; flex-direction: column;"></div>
+
     <div id="game-container"></div>
     
     <!-- Game Configuration -->
@@ -30,6 +32,7 @@
     <script src="src/entities/Boss.js"></script>
     <script src="src/entities/Bullet.js"></script>
     <script src="src/entities/Bonus.js"></script>
+    <script src="src/entities/PowerUp.js"></script>
     
     <!-- Scene Modules -->
     <script src="src/scenes/GameSceneSetup.js"></script>

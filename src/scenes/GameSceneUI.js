@@ -12,6 +12,51 @@ const GameSceneUI = {
         document.getElementById('armyCount').textContent = scene.playerArmy;
         document.getElementById('waveCount').textContent = scene.wave;
         document.getElementById('scoreCount').textContent = scene.score;
+
+        // Update power-ups display
+        this.updatePowerUpsDisplay(scene);
+    },
+
+    /**
+     * Update power-ups display showing active power-ups and timers
+     */
+    updatePowerUpsDisplay(scene) {
+        const powerUpsContainer = document.getElementById('powerups-display');
+        if (!powerUpsContainer) return;
+
+        let powerUpsHTML = '';
+
+        // Triple Shot display
+        if (scene.tripleShotActive) {
+            const timeLeft = Math.ceil(scene.tripleShotTimer / 1000);
+            powerUpsHTML += `
+                <div style="background: #ff00ff; padding: 5px 10px; margin: 5px; border-radius: 5px; font-size: 14px;">
+                    <strong>3X SHOT</strong> - ${timeLeft}s
+                </div>
+            `;
+        }
+
+        // Big Bullets display
+        if (scene.bigBulletsActive) {
+            const timeLeft = Math.ceil(scene.bigBulletsTimer / 1000);
+            powerUpsHTML += `
+                <div style="background: #00ffff; padding: 5px 10px; margin: 5px; border-radius: 5px; font-size: 14px; color: #000;">
+                    <strong>BIG BULLETS</strong> - ${timeLeft}s
+                </div>
+            `;
+        }
+
+        // Shield Trap display
+        if (scene.shieldTrapActive) {
+            const timeLeft = Math.ceil(scene.shieldTrapTimer / 1000);
+            powerUpsHTML += `
+                <div style="background: #ffaa00; padding: 5px 10px; margin: 5px; border-radius: 5px; font-size: 14px; color: #000;">
+                    <strong>SHIELD TRAP</strong> - ${timeLeft}s
+                </div>
+            `;
+        }
+
+        powerUpsContainer.innerHTML = powerUpsHTML;
     },
 
     /**

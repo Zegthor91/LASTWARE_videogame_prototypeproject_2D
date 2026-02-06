@@ -20,11 +20,21 @@ class GameScene extends Phaser.Scene {
         this.bosses = [];
         this.bullets = [];
         this.bonuses = [];
+        this.powerUps = [];
         this.stars = [];
 
         // Timers
         this.shootTimer = 0;
         this.spawnTimer = 0;
+
+        // Power-up state
+        this.tripleShotActive = false;
+        this.tripleShotTimer = 0;
+        this.bigBulletsActive = false;
+        this.bigBulletsTimer = 0;
+        this.shieldTrapActive = false;
+        this.shieldTrapTimer = 0;
+        this.shieldGraphics = null; // Visual shield around player
     }
 
     create() {
@@ -69,6 +79,10 @@ class GameScene extends Phaser.Scene {
         GameSceneCollisions.handleBulletEnemyCollisions(this);
         GameSceneCollisions.handlePlayerEnemyCollisions(this);
         GameSceneCollisions.handlePlayerBonusCollisions(this);
+        GameSceneCollisions.handlePlayerPowerUpCollisions(this);
+
+        // Update power-up timers
+        this.updatePowerUpTimers(delta);
 
         // Cleanup off-screen entities
         this.cleanupOffscreenEntities();
@@ -115,6 +129,7 @@ class GameScene extends Phaser.Scene {
         this.bosses.forEach(boss => boss.update(dt, { x: this.player.x, y: this.player.y }));
         this.bullets.forEach(bullet => bullet.update(dt));
         this.bonuses.forEach(bonus => bonus.update(dt));
+        this.powerUps.forEach(powerUp => powerUp.update(dt));
     }
 
     cleanupOffscreenEntities() {
@@ -149,6 +164,14 @@ class GameScene extends Phaser.Scene {
             }
             return true;
         });
+
+        this.powerUps = this.powerUps.filter(p => {
+            if (p.isOffScreen()) {
+                p.destroy();
+                return false;
+            }
+            return true;
+        });
     }
 
     handleWaveSpawning(delta) {
@@ -161,6 +184,43 @@ class GameScene extends Phaser.Scene {
         if (this.spawnTimer > currentInterval) {
             GameSceneSpawning.spawnContinuousWave(this);
             this.spawnTimer = 0;
+        }
+    }
+
+    updatePowerUpTimers(delta) {
+        // Triple Shot timer
+        if (this.tripleShotActive) {
+            this.tripleShotTimer -= delta;
+            if (this.tripleShotTimer <= 0) {
+                this.tripleShotActive = false;
+                this.tripleShotTimer = 0;
+                GameSceneUI.updateUI(this);
+            }
+        }
+
+        // Big Bullets timer
+        if (this.bigBulletsActive) {
+            this.bigBulletsTimer -= delta;
+            if (this.bigBulletsTimer <= 0) {
+                this.bigBulletsActive = false;
+                this.bigBulletsTimer = 0;
+                GameSceneUI.updateUI(this);
+            }
+        }
+
+        // Shield Trap timer
+        if (this.shieldTrapActive) {
+            this.shieldTrapTimer -= delta;
+            if (this.shieldTrapTimer <= 0) {
+                this.shieldTrapActive = false;
+                this.shieldTrapTimer = 0;
+                // Remove shield visual
+                if (this.shieldGraphics) {
+                    this.shieldGraphics.destroy();
+                    this.shieldGraphics = null;
+                }
+                GameSceneUI.updateUI(this);
+            }
         }
     }
 }

@@ -165,5 +165,123 @@ const GameSceneEffects = {
         }
 
         return enemiesDamaged;
+    },
+
+    /**
+     * Show power-up collection message
+     */
+    showPowerUpMessage(scene, text, color) {
+        const powerUpText = scene.add.text(400, 350, text, {
+            fontSize: '32px',
+            fill: `#${color.toString(16).padStart(6, '0')}`,
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0.5);
+
+        scene.tweens.add({
+            targets: powerUpText,
+            y: 300,
+            alpha: 0,
+            duration: 1500,
+            onComplete: () => powerUpText.destroy()
+        });
+    },
+
+    /**
+     * Create shield visual around player
+     */
+    createShieldVisual(scene) {
+        // Remove old shield if exists
+        if (scene.shieldGraphics) {
+            scene.shieldGraphics.destroy();
+        }
+
+        // Create shield circle
+        const radius = GAME_CONSTANTS.POWERUP.SHIELD_TRAP.SHIELD_RADIUS;
+        scene.shieldGraphics = scene.add.circle(
+            scene.player.x,
+            scene.player.y,
+            radius,
+            GAME_CONSTANTS.POWERUP.SHIELD_TRAP.COLOR,
+            0.3
+        );
+        scene.shieldGraphics.setStrokeStyle(3, GAME_CONSTANTS.POWERUP.SHIELD_TRAP.COLOR);
+
+        // Pulsing animation
+        scene.tweens.add({
+            targets: scene.shieldGraphics,
+            scaleX: 1.15,
+            scaleY: 1.15,
+            alpha: 0.5,
+            duration: 800,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+
+        // Update shield position in every frame
+        scene.events.on('update', () => {
+            if (scene.shieldGraphics && scene.shieldTrapActive) {
+                scene.shieldGraphics.x = scene.player.x;
+                scene.shieldGraphics.y = scene.player.y;
+            }
+        });
+    },
+
+    /**
+     * Show shield trap activation effect (when enemy hits shield)
+     */
+    showShieldTrapActivation(scene, enemiesDestroyed) {
+        // Massive screen flash
+        scene.cameras.main.flash(600, 255, 165, 0);
+        scene.cameras.main.shake(800, 0.05);
+
+        // Shockwave effect
+        const shockwave = scene.add.circle(
+            scene.player.x,
+            scene.player.y,
+            30,
+            0xffaa00,
+            0.7
+        );
+        scene.tweens.add({
+            targets: shockwave,
+            scaleX: 20,
+            scaleY: 20,
+            alpha: 0,
+            duration: 800,
+            ease: 'Cubic.easeOut',
+            onComplete: () => shockwave.destroy()
+        });
+
+        // Display message
+        const messageText = scene.add.text(400, 300, 'SHIELD TRAP ACTIVATED!', {
+            fontSize: '40px',
+            fill: '#ffaa00',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 8
+        }).setOrigin(0.5);
+
+        const countText = scene.add.text(400, 350, `${enemiesDestroyed} ENEMIES DESTROYED!`, {
+            fontSize: '28px',
+            fill: '#ff6600',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0.5);
+
+        scene.tweens.add({
+            targets: [messageText, countText],
+            y: '-=50',
+            alpha: 0,
+            duration: 2000,
+            ease: 'Cubic.easeOut',
+            onComplete: () => {
+                messageText.destroy();
+                countText.destroy();
+            }
+        });
     }
 };

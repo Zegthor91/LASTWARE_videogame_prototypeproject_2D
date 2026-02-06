@@ -62,16 +62,23 @@ const GameSceneCollisions = {
         // Normal enemies
         scene.enemies.forEach((enemy, index) => {
             if (CollisionUtils.checkCollision(scene.player, enemy)) {
-                this.playerHit(scene, 1); // Normal enemy deals 1 damage
-                enemy.destroy();
-                scene.enemies.splice(index, 1);
+                // Check if shield trap is active
+                if (scene.shieldTrapActive) {
+                    // SHIELD TRAP ACTIVATED - Kill all enemies!
+                    this.activateShieldTrap(scene);
+                    return; // Exit early - all enemies destroyed
+                } else {
+                    this.playerHit(scene, 1); // Normal enemy deals 1 damage
+                    enemy.destroy();
+                    scene.enemies.splice(index, 1);
+                }
             }
         });
 
-        // Bosses - deal more damage
+        // Bosses - deal more damage (shield doesn't affect boss collision)
         scene.bosses.forEach((boss, index) => {
             if (CollisionUtils.checkCollision(scene.player, boss)) {
-                this.playerHit(scene, GAME_CONSTANTS.BOSS.DAMAGE); // Boss deals 3 damage
+                this.playerHit(scene, GAME_CONSTANTS.BOSS.DAMAGE);
                 boss.destroy();
                 scene.bosses.splice(index, 1);
             }
@@ -120,5 +127,90 @@ const GameSceneCollisions = {
         // Visual feedback
         GameSceneEffects.createBonusFlash(scene, bonus);
         GameSceneEffects.createFloatingText(scene, bonus);
+    },
+
+    /**
+     * Handle player collisions with power-ups
+     */
+    handlePlayerPowerUpCollisions(scene) {
+        scene.powerUps.forEach((powerUp, index) => {
+            if (CollisionUtils.checkCollision(scene.player, powerUp)) {
+                this.collectPowerUp(scene, powerUp);
+                powerUp.destroy();
+                scene.powerUps.splice(index, 1);
+            }
+        });
+    },
+
+    /**
+     * Player collects a power-up
+     */
+    collectPowerUp(scene, powerUp) {
+        const duration = GAME_CONSTANTS.POWERUP.DURATION;
+
+        if (powerUp.type === 'TRIPLE_SHOT') {
+            scene.tripleShotActive = true;
+            scene.tripleShotTimer = duration;
+
+            // Show power-up message
+            GameSceneEffects.showPowerUpMessage(scene, 'TRIPLE SHOT!', GAME_CONSTANTS.POWERUP.TRIPLE_SHOT.COLOR);
+        } else if (powerUp.type === 'BIG_BULLETS') {
+            scene.bigBulletsActive = true;
+            scene.bigBulletsTimer = duration;
+
+            // Show power-up message
+            GameSceneEffects.showPowerUpMessage(scene, 'BIG BULLETS!', GAME_CONSTANTS.POWERUP.BIG_BULLETS.COLOR);
+        } else if (powerUp.type === 'SHIELD_TRAP') {
+            scene.shieldTrapActive = true;
+            scene.shieldTrapTimer = duration;
+
+            // Create shield visual
+            GameSceneEffects.createShieldVisual(scene);
+
+            // Show power-up message
+            GameSceneEffects.showPowerUpMessage(scene, 'SHIELD TRAP!', GAME_CONSTANTS.POWERUP.SHIELD_TRAP.COLOR);
+        }
+
+        // Check for combo (both power-ups active)
+        if (scene.tripleShotActive && scene.bigBulletsActive) {
+            GameSceneEffects.showPowerUpMessage(scene, 'COMBO!!!', GAME_CONSTANTS.POWERUP.COMBO.COLOR);
+            scene.cameras.main.flash(300, 255, 255, 255);
+        }
+
+        // Visual feedback
+        GameSceneEffects.createBonusFlash(scene, powerUp);
+
+        // Update UI to show active power-ups
+        GameSceneUI.updateUI(scene);
+    },
+
+    /**
+     * Activate shield trap - destroy all enemies on screen (except bosses)
+     */
+    activateShieldTrap(scene) {
+        let enemiesDestroyed = 0;
+
+        // Destroy all enemies
+        scene.enemies.forEach((enemy) => {
+            GameSceneEffects.createExplosion(scene, enemy.x, enemy.y);
+            enemy.destroy();
+            scene.score += GAME_CONSTANTS.ENEMY.POINTS;
+            enemiesDestroyed++;
+        });
+        scene.enemies = [];
+
+        // Deactivate shield
+        scene.shieldTrapActive = false;
+        scene.shieldTrapTimer = 0;
+        if (scene.shieldGraphics) {
+            scene.shieldGraphics.destroy();
+            scene.shieldGraphics = null;
+        }
+
+        // Show shield trap activation effect
+        GameSceneEffects.showShieldTrapActivation(scene, enemiesDestroyed);
+
+        // Update UI
+        GameSceneUI.updateUI(scene);
     }
 };
