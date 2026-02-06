@@ -77,33 +77,60 @@ class Boss {
                 this.x = newX;
                 this.y = newY;
             } else {
-                // Check barrier collision
-                const barrierTop = {
-                    x: GAME_CONSTANTS.CORRIDOR.CENTER - GAME_CONSTANTS.BARRIER.WIDTH / 2,
-                    y: GAME_CONSTANTS.BARRIER.TOP_Y,
-                    width: GAME_CONSTANTS.BARRIER.WIDTH,
-                    height: GAME_CONSTANTS.BARRIER.TOP_HEIGHT
-                };
-
-                const barrierBottom = {
-                    x: GAME_CONSTANTS.CORRIDOR.CENTER - GAME_CONSTANTS.BARRIER.WIDTH / 2,
-                    y: GAME_CONSTANTS.BARRIER.BOTTOM_Y,
-                    width: GAME_CONSTANTS.BARRIER.WIDTH,
-                    height: GAME_CONSTANTS.BARRIER.BOTTOM_HEIGHT
-                };
+                // Check left and right barrier collisions only
+                const barriers = [
+                    // Left barrier
+                    {
+                        x: GAME_CONSTANTS.CORRIDOR.LEFT_BARRIER - GAME_CONSTANTS.BARRIER.WIDTH / 2,
+                        y: GAME_CONSTANTS.BARRIER.TOP_Y,
+                        width: GAME_CONSTANTS.BARRIER.WIDTH,
+                        height: GAME_CONSTANTS.BARRIER.TOP_HEIGHT
+                    },
+                    {
+                        x: GAME_CONSTANTS.CORRIDOR.LEFT_BARRIER - GAME_CONSTANTS.BARRIER.WIDTH / 2,
+                        y: GAME_CONSTANTS.BARRIER.BOTTOM_Y,
+                        width: GAME_CONSTANTS.BARRIER.WIDTH,
+                        height: GAME_CONSTANTS.BARRIER.BOTTOM_HEIGHT
+                    },
+                    // Right barrier
+                    {
+                        x: GAME_CONSTANTS.CORRIDOR.RIGHT_BARRIER - GAME_CONSTANTS.BARRIER.WIDTH / 2,
+                        y: GAME_CONSTANTS.BARRIER.TOP_Y,
+                        width: GAME_CONSTANTS.BARRIER.WIDTH,
+                        height: GAME_CONSTANTS.BARRIER.TOP_HEIGHT
+                    },
+                    {
+                        x: GAME_CONSTANTS.CORRIDOR.RIGHT_BARRIER - GAME_CONSTANTS.BARRIER.WIDTH / 2,
+                        y: GAME_CONSTANTS.BARRIER.BOTTOM_Y,
+                        width: GAME_CONSTANTS.BARRIER.WIDTH,
+                        height: GAME_CONSTANTS.BARRIER.BOTTOM_HEIGHT
+                    }
+                ];
 
                 const newPos = { x: newX, y: newY, width: this.width, height: this.height };
 
-                if (!CollisionUtils.checkCollision(newPos, barrierTop) &&
-                    !CollisionUtils.checkCollision(newPos, barrierBottom)) {
+                // Check collision with barriers
+                let blocked = false;
+                let nearestBarrier = 400; // Center of map
+                for (const barrier of barriers) {
+                    if (CollisionUtils.checkCollision(newPos, barrier)) {
+                        blocked = true;
+                        // Determine which barrier is blocking
+                        const barrierCenterX = barrier.x + barrier.width / 2;
+                        nearestBarrier = barrierCenterX;
+                        break;
+                    }
+                }
+
+                if (!blocked) {
                     this.x = newX;
                     this.y = newY;
                 } else {
                     // Move toward passage if blocked
                     this.y += this.speed * dt;
                     if (Math.abs(this.y - GAME_CONSTANTS.CORRIDOR.PASSAGE_Y) < 100) {
-                        const toCenter = this.x < GAME_CONSTANTS.CORRIDOR.CENTER ? 30 : -30;
-                        this.x += toCenter * dt;
+                        const toBarrier = this.x < nearestBarrier ? 30 : -30;
+                        this.x += toBarrier * dt;
                     }
                 }
             }

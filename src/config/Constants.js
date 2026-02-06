@@ -8,16 +8,28 @@ const GAME_CONSTANTS = {
     // ==================== GAME DIMENSIONS ====================
     GAME_WIDTH: 800,
     GAME_HEIGHT: 600,
-    
+
     // ==================== CORRIDOR LAYOUT ====================
     CORRIDOR: {
-        LEFT_BORDER: 150,
-        RIGHT_BORDER: 650,
-        CENTER: 500,  // Moved from 400 to 500 (1/4 to the right)
-        LEFT_SPAWN_MIN: 170,
-        LEFT_SPAWN_MAX: 490,  // Adjusted for new center
-        RIGHT_SPAWN_MIN: 510, // Adjusted for new center
-        RIGHT_SPAWN_MAX: 630,
+        // Game borders
+        LEFT_BORDER: 50,
+        RIGHT_BORDER: 750,
+
+        // Left bonus corridor
+        LEFT_BONUS_MIN: 60,
+        LEFT_BONUS_MAX: 120,
+        LEFT_BARRIER: 150,
+
+        // Large central enemy corridor (no center barrier!)
+        ENEMY_MIN: 180,
+        ENEMY_MAX: 620,
+
+        // Right bonus corridor
+        RIGHT_BARRIER: 650,
+        RIGHT_BONUS_MIN: 680,
+        RIGHT_BONUS_MAX: 740,
+
+        // Passages
         PASSAGE_Y: 445,
         PASSAGE_HEIGHT: 50
     },
@@ -29,8 +41,8 @@ const GAME_CONSTANTS = {
         WIDTH: 40,
         HEIGHT: 50,
         SPEED: 8,
-        MIN_X: 160,
-        MAX_X: 640,
+        MIN_X: 60,
+        MAX_X: 740,
         COLOR: 0x0088ff,
         STARTING_ARMY: 1
     },
@@ -99,7 +111,7 @@ const GAME_CONSTANTS = {
     // ==================== POWER-UP SETTINGS ====================
     POWERUP: {
         DURATION: 15000, // 15 seconds in milliseconds
-        SPAWN_CHANCE: 0.08, // 8% chance per wave
+        SPAWN_CHANCE: 0.05, // 5% chance per wave
 
         // Triple Shot power-up
         TRIPLE_SHOT: {
@@ -146,8 +158,8 @@ const GAME_CONSTANTS = {
         ],
 
         // Bonus spawn chance progression
-        BASE_BONUS_CHANCE: 0.25,  // 25% - slightly increased
-        MAX_BONUS_CHANCE: 0.35,   // 35% - max chance
+        BASE_BONUS_CHANCE: 0.30,  // 30% - increased spawn rate
+        MAX_BONUS_CHANCE: 0.40,   // 40% - max chance
         BONUS_CHANCE_INCREASE: 0.015 // Per wave
     },
     

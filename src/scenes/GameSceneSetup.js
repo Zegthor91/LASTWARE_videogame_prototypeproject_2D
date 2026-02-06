@@ -16,38 +16,59 @@ const GameSceneSetup = {
      * Create barriers and passage indicators
      */
     createBarriers(scene) {
-        // Top barrier
+        // LEFT BARRIER (separates left bonus from enemies)
         scene.add.rectangle(
-            GAME_CONSTANTS.CORRIDOR.CENTER,
+            GAME_CONSTANTS.CORRIDOR.LEFT_BARRIER,
             GAME_CONSTANTS.BARRIER.TOP_Y,
             6,
             GAME_CONSTANTS.BARRIER.TOP_HEIGHT,
             GAME_CONSTANTS.BARRIER.COLOR
         );
-
-        // Bottom barrier
         scene.add.rectangle(
-            GAME_CONSTANTS.CORRIDOR.CENTER,
+            GAME_CONSTANTS.CORRIDOR.LEFT_BARRIER,
             GAME_CONSTANTS.BARRIER.BOTTOM_Y,
             6,
             GAME_CONSTANTS.BARRIER.BOTTOM_HEIGHT,
             GAME_CONSTANTS.BARRIER.COLOR
         );
 
-        // Passage indicator
+        // RIGHT BARRIER (separates enemies from right bonus)
+        scene.add.rectangle(
+            GAME_CONSTANTS.CORRIDOR.RIGHT_BARRIER,
+            GAME_CONSTANTS.BARRIER.TOP_Y,
+            6,
+            GAME_CONSTANTS.BARRIER.TOP_HEIGHT,
+            GAME_CONSTANTS.BARRIER.COLOR
+        );
+        scene.add.rectangle(
+            GAME_CONSTANTS.CORRIDOR.RIGHT_BARRIER,
+            GAME_CONSTANTS.BARRIER.BOTTOM_Y,
+            6,
+            GAME_CONSTANTS.BARRIER.BOTTOM_HEIGHT,
+            GAME_CONSTANTS.BARRIER.COLOR
+        );
+
+        // Passage indicators
         const passageY = GAME_CONSTANTS.CORRIDOR.PASSAGE_Y;
-        scene.add.rectangle(GAME_CONSTANTS.CORRIDOR.CENTER, passageY, 8, 54, 0x00ff00, 0.4);
 
-        scene.add.text(460, passageY - 10, 'BONUS', { fontSize: '18px', fill: '#ffff00', fontStyle: 'bold' });
-        scene.add.text(520, passageY - 10, 'ENEMIES', { fontSize: '18px', fill: '#ffff00', fontStyle: 'bold' });
+        // Left passage indicator
+        scene.add.rectangle(GAME_CONSTANTS.CORRIDOR.LEFT_BARRIER, passageY, 8, 54, 0x00ff00, 0.4);
 
-        // Labels - Adjusted for new barrier position
-        scene.add.text(330, 30, 'ENEMIES', {
+        // Right passage indicator
+        scene.add.rectangle(GAME_CONSTANTS.CORRIDOR.RIGHT_BARRIER, passageY, 8, 54, 0x00ff00, 0.4);
+
+        // Zone labels
+        scene.add.text(90, 30, 'BONUS', {
+            fontSize: '18px', fill: '#00ff00', fontStyle: 'bold',
+            stroke: '#000000', strokeThickness: 4
+        }).setOrigin(0.5);
+
+        scene.add.text(400, 30, 'ENEMIES', {
             fontSize: '26px', fill: '#ff0000', fontStyle: 'bold',
             stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5);
 
-        scene.add.text(575, 30, 'BONUS', {
+        scene.add.text(710, 30, 'BONUS', {
             fontSize: '18px', fill: '#00ff00', fontStyle: 'bold',
             stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5);

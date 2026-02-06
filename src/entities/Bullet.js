@@ -16,6 +16,10 @@ class Bullet {
         this.width = GAME_CONSTANTS.BULLET.WIDTH * sizeMultiplier;
         this.height = GAME_CONSTANTS.BULLET.HEIGHT * sizeMultiplier;
 
+        // Hitbox slightly larger for better collision detection
+        const hitboxWidth = this.width + 4;
+        const hitboxHeight = this.height + 4;
+
         // Visual size scales with damage (max 2x)
         const damageScale = Math.min(1 + (damage - 1) * 0.1, 2);
         const visualWidth = this.width * damageScale;
@@ -29,8 +33,12 @@ class Bullet {
         this.graphics = scene.add.rectangle(x, y, visualWidth, visualHeight, bulletColor);
         this.graphics.setStrokeStyle(2, 0xffaa00);
 
-        this.hitbox = scene.add.rectangle(x, y, this.width, this.height, bulletColor, 0);
+        this.hitbox = scene.add.rectangle(x, y, hitboxWidth, hitboxHeight, bulletColor, 0);
         this.hitbox.setStrokeStyle(2, 0x00ffff);
+
+        // Store hitbox dimensions for collision detection
+        this.width = hitboxWidth;
+        this.height = hitboxHeight;
     }
     
     /**

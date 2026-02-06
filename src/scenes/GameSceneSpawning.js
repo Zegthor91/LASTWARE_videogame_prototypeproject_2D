@@ -10,13 +10,13 @@ const GameSceneSpawning = {
      */
     spawnInitialWaves(scene) {
         setTimeout(() => {
-            scene.enemies.push(new Enemy(scene, 250, 50, scene.wave));
+            scene.enemies.push(new Enemy(scene, 300, 50, scene.wave));
         }, 100);
         setTimeout(() => {
-            scene.enemies.push(new Enemy(scene, 300, 50, scene.wave));
+            scene.enemies.push(new Enemy(scene, 500, 50, scene.wave));
         }, 700);
         setTimeout(() => {
-            scene.bonuses.push(new Bonus(scene, 550, 50, scene.wave));
+            scene.bonuses.push(new Bonus(scene, 90, 50, scene.wave));
         }, 2000);
     },
 
@@ -28,10 +28,8 @@ const GameSceneSpawning = {
 
         for (let i = 0; i < count; i++) {
             setTimeout(() => {
-                const x = Phaser.Math.Between(
-                    GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MIN,
-                    GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MAX
-                );
+                // Spawn in central enemy corridor
+                const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.ENEMY_MIN, GAME_CONSTANTS.CORRIDOR.ENEMY_MAX);
                 scene.enemies.push(new Enemy(scene, x, 50, scene.wave));
             }, i * GAME_CONSTANTS.SPAWN.ENEMY_SPACING);
         }
@@ -72,10 +70,8 @@ const GameSceneSpawning = {
      */
     spawnBoss(scene) {
         setTimeout(() => {
-            const x = Phaser.Math.Between(
-                GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MIN + 20,
-                GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MAX - 20
-            );
+            // Spawn in central enemy corridor
+            const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.ENEMY_MIN + 20, GAME_CONSTANTS.CORRIDOR.ENEMY_MAX - 20);
             scene.bosses.push(new Boss(scene, x, 50, scene.wave));
 
             // Boss warning flash
@@ -116,10 +112,8 @@ const GameSceneSpawning = {
         // Spawn enemies with current wave scaling
         for (let i = 0; i < enemyCount; i++) {
             setTimeout(() => {
-                const x = Phaser.Math.Between(
-                    GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MIN,
-                    GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MAX
-                );
+                // Spawn in central enemy corridor
+                const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.ENEMY_MIN, GAME_CONSTANTS.CORRIDOR.ENEMY_MAX);
                 scene.enemies.push(new Enemy(scene, x, 50, scene.wave));
             }, i * GAME_CONSTANTS.SPAWN.ENEMY_SPACING);
         }
@@ -136,10 +130,11 @@ const GameSceneSpawning = {
 
         if (Math.random() < bonusChance) {
             setTimeout(() => {
-                const x = Phaser.Math.Between(
-                    GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MIN,
-                    GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MAX
-                );
+                // Randomly choose between left and right bonus corridors
+                const useLeftCorridor = Math.random() < 0.5;
+                const x = useLeftCorridor
+                    ? Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MAX)
+                    : Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MAX);
                 scene.bonuses.push(new Bonus(scene, x, 50, scene.wave));
             }, GAME_CONSTANTS.SPAWN.BONUS_DELAY);
         }
@@ -222,10 +217,11 @@ const GameSceneSpawning = {
                     powerUpType = 'SHIELD_TRAP';
                 }
 
-                const x = Phaser.Math.Between(
-                    GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MIN,
-                    GAME_CONSTANTS.CORRIDOR.RIGHT_SPAWN_MAX
-                );
+                // Randomly choose between left and right bonus corridors
+                const useLeftCorridor = Math.random() < 0.5;
+                const x = useLeftCorridor
+                    ? Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MAX)
+                    : Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MAX);
                 scene.powerUps.push(new PowerUp(scene, x, 50, powerUpType));
             }, GAME_CONSTANTS.SPAWN.BONUS_DELAY);
         }
