@@ -111,7 +111,11 @@ const GAME_CONSTANTS = {
     // ==================== POWER-UP SETTINGS ====================
     POWERUP: {
         DURATION: 15000, // 15 seconds in milliseconds
-        SPAWN_CHANCE: 0.05, // 5% chance per wave
+
+        // Progressive spawn chance (increases with waves)
+        BASE_SPAWN_CHANCE: 0.05, // 5% at wave 1
+        MAX_SPAWN_CHANCE: 0.20,  // 20% maximum
+        SPAWN_CHANCE_INCREASE: 0.01, // +1% per wave
 
         // Triple Shot power-up
         TRIPLE_SHOT: {
@@ -138,6 +142,14 @@ const GAME_CONSTANTS = {
             COLOR: 0xffaa00, // Orange
             ICON: 'SHIELD',
             SHIELD_RADIUS: 35 // Visual shield radius around player
+        },
+
+        // Clone power-up
+        CLONE: {
+            COLOR: 0x00ff88, // Green-cyan
+            ICON: 'CLONE',
+            OFFSET_X: 60, // Distance from player in pixels
+            ALPHA: 0.7 // Clone transparency
         }
     },
     
@@ -159,8 +171,8 @@ const GAME_CONSTANTS = {
 
         // Bonus spawn chance progression
         BASE_BONUS_CHANCE: 0.30,  // 30% - increased spawn rate
-        MAX_BONUS_CHANCE: 0.40,   // 40% - max chance
-        BONUS_CHANCE_INCREASE: 0.015 // Per wave
+        MAX_BONUS_CHANCE: 0.60,   // 60% - max chance (increased from 40%)
+        BONUS_CHANCE_INCREASE: 0.02 // Per wave (increased from 0.015)
     },
     
     // ==================== SPAWN TIMINGS ====================

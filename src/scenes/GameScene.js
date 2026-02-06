@@ -22,6 +22,7 @@ class GameScene extends Phaser.Scene {
         this.bonuses = [];
         this.powerUps = [];
         this.stars = [];
+        this.clones = []; // Player clones
 
         // Timers
         this.shootTimer = 0;
@@ -35,6 +36,8 @@ class GameScene extends Phaser.Scene {
         this.shieldTrapActive = false;
         this.shieldTrapTimer = 0;
         this.shieldGraphics = null; // Visual shield around player
+        this.cloneActive = false;
+        this.cloneTimer = 0;
     }
 
     create() {
@@ -130,6 +133,17 @@ class GameScene extends Phaser.Scene {
         this.bullets.forEach(bullet => bullet.update(dt));
         this.bonuses.forEach(bonus => bonus.update(dt));
         this.powerUps.forEach(powerUp => powerUp.update(dt));
+
+        // Update clone positions to follow player
+        this.clones.forEach(clone => {
+            clone.x = this.player.x + clone.offsetX;
+            clone.y = this.player.y;
+            // Clamp to game boundaries
+            clone.x = Phaser.Math.Clamp(clone.x, GAME_CONSTANTS.PLAYER.MIN_X, GAME_CONSTANTS.PLAYER.MAX_X);
+            // Update graphics position
+            clone.graphics.x = clone.x;
+            clone.graphics.y = clone.y;
+        });
     }
 
     cleanupOffscreenEntities() {
@@ -219,6 +233,21 @@ class GameScene extends Phaser.Scene {
                     this.shieldGraphics.destroy();
                     this.shieldGraphics = null;
                 }
+                GameSceneUI.updateUI(this);
+            }
+        }
+
+        // Clone timer
+        if (this.cloneActive) {
+            this.cloneTimer -= delta;
+            if (this.cloneTimer <= 0) {
+                this.cloneActive = false;
+                this.cloneTimer = 0;
+                // Destroy clones
+                this.clones.forEach(clone => {
+                    if (clone.graphics) clone.graphics.destroy();
+                });
+                this.clones = [];
                 GameSceneUI.updateUI(this);
             }
         }

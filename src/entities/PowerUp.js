@@ -1,7 +1,7 @@
 /**
  * PowerUp Entity
  * Temporary power-up that modifies player shooting or defense
- * Types: TRIPLE_SHOT (3 angles), BIG_BULLETS (larger hitbox), SHIELD_TRAP (trap shield)
+ * Types: TRIPLE_SHOT (3 angles), BIG_BULLETS (larger hitbox), SHIELD_TRAP (trap shield), CLONE (2 clones)
  * KISS: Simple collectible with type and visual distinction
  */
 
@@ -13,7 +13,7 @@ class PowerUp {
         this.width = GAME_CONSTANTS.BONUS.RADIUS * 2;
         this.height = GAME_CONSTANTS.BONUS.RADIUS * 2;
         this.speed = GAME_CONSTANTS.BONUS.SPEED;
-        this.type = type; // 'TRIPLE_SHOT', 'BIG_BULLETS', or 'SHIELD_TRAP'
+        this.type = type; // 'TRIPLE_SHOT', 'BIG_BULLETS', 'SHIELD_TRAP', or 'CLONE'
 
         // Get color and icon based on type
         let config;
@@ -21,8 +21,10 @@ class PowerUp {
             config = GAME_CONSTANTS.POWERUP.TRIPLE_SHOT;
         } else if (type === 'BIG_BULLETS') {
             config = GAME_CONSTANTS.POWERUP.BIG_BULLETS;
-        } else {
+        } else if (type === 'SHIELD_TRAP') {
             config = GAME_CONSTANTS.POWERUP.SHIELD_TRAP;
+        } else {
+            config = GAME_CONSTANTS.POWERUP.CLONE;
         }
 
         this.color = config.COLOR;

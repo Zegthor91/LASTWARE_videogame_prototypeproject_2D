@@ -154,7 +154,7 @@ const GameSceneSpawning = {
             ? GAME_CONSTANTS.POWERUP.BIG_BULLETS.SIZE_MULTIPLIER
             : 1;
 
-        // Check if Triple Shot power-up is active
+        // Fire from player
         if (scene.tripleShotActive) {
             // Fire 3 bullets at different angles
             const angleSpread = GAME_CONSTANTS.POWERUP.TRIPLE_SHOT.ANGLE_SPREAD;
@@ -175,6 +175,33 @@ const GameSceneSpawning = {
         } else {
             // Normal single bullet
             scene.bullets.push(new Bullet(scene, scene.player.x, scene.player.y - 30, bulletDamage, sizeMultiplier));
+        }
+
+        // Fire from clones if active
+        if (scene.cloneActive && scene.clones.length > 0) {
+            scene.clones.forEach(clone => {
+                if (scene.tripleShotActive) {
+                    // Fire 3 bullets at different angles from clone
+                    const angleSpread = GAME_CONSTANTS.POWERUP.TRIPLE_SHOT.ANGLE_SPREAD;
+
+                    // Center bullet
+                    const centerBullet = new Bullet(scene, clone.x, clone.y - 30, bulletDamage, sizeMultiplier);
+                    scene.bullets.push(centerBullet);
+
+                    // Left diagonal bullet
+                    const leftBullet = new Bullet(scene, clone.x - 10, clone.y - 30, bulletDamage, sizeMultiplier);
+                    this._addBulletVelocity(leftBullet, -angleSpread);
+                    scene.bullets.push(leftBullet);
+
+                    // Right diagonal bullet
+                    const rightBullet = new Bullet(scene, clone.x + 10, clone.y - 30, bulletDamage, sizeMultiplier);
+                    this._addBulletVelocity(rightBullet, angleSpread);
+                    scene.bullets.push(rightBullet);
+                } else {
+                    // Normal single bullet from clone
+                    scene.bullets.push(new Bullet(scene, clone.x, clone.y - 30, bulletDamage, sizeMultiplier));
+                }
+            });
         }
     },
 
@@ -201,20 +228,28 @@ const GameSceneSpawning = {
     },
 
     /**
-     * Spawn a power-up with random chance
+     * Spawn a power-up with progressive chance (increases with waves)
      */
     spawnPowerUp(scene) {
-        if (Math.random() < GAME_CONSTANTS.POWERUP.SPAWN_CHANCE) {
+        // Calculate progressive power-up chance
+        const powerUpChance = Math.min(
+            GAME_CONSTANTS.POWERUP.BASE_SPAWN_CHANCE + (scene.wave * GAME_CONSTANTS.POWERUP.SPAWN_CHANCE_INCREASE),
+            GAME_CONSTANTS.POWERUP.MAX_SPAWN_CHANCE
+        );
+
+        if (Math.random() < powerUpChance) {
             setTimeout(() => {
-                // Randomly choose between TRIPLE_SHOT, BIG_BULLETS, and SHIELD_TRAP
+                // Randomly choose between TRIPLE_SHOT, BIG_BULLETS, SHIELD_TRAP, and CLONE
                 const rand = Math.random();
                 let powerUpType;
-                if (rand < 0.33) {
+                if (rand < 0.25) {
                     powerUpType = 'TRIPLE_SHOT';
-                } else if (rand < 0.66) {
+                } else if (rand < 0.50) {
                     powerUpType = 'BIG_BULLETS';
-                } else {
+                } else if (rand < 0.75) {
                     powerUpType = 'SHIELD_TRAP';
+                } else {
+                    powerUpType = 'CLONE';
                 }
 
                 // Randomly choose between left and right bonus corridors

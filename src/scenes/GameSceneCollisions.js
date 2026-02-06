@@ -169,6 +169,55 @@ const GameSceneCollisions = {
 
             // Show power-up message
             GameSceneEffects.showPowerUpMessage(scene, 'SHIELD TRAP!', GAME_CONSTANTS.POWERUP.SHIELD_TRAP.COLOR);
+        } else if (powerUp.type === 'CLONE') {
+            scene.cloneActive = true;
+            scene.cloneTimer = duration;
+
+            // Destroy existing clones if any
+            scene.clones.forEach(clone => {
+                if (clone.graphics) clone.graphics.destroy();
+            });
+            scene.clones = [];
+
+            // Create 2 simple clones (left and right)
+            const offset = GAME_CONSTANTS.POWERUP.CLONE.OFFSET_X;
+
+            // Left clone
+            const leftClone = {
+                offsetX: -offset,
+                x: scene.player.x - offset,
+                y: scene.player.y,
+                graphics: scene.add.rectangle(
+                    scene.player.x - offset,
+                    scene.player.y,
+                    GAME_CONSTANTS.PLAYER.WIDTH,
+                    GAME_CONSTANTS.PLAYER.HEIGHT,
+                    GAME_CONSTANTS.PLAYER.COLOR
+                )
+            };
+            leftClone.graphics.setStrokeStyle(3, 0x00ffff);
+            leftClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
+            scene.clones.push(leftClone);
+
+            // Right clone
+            const rightClone = {
+                offsetX: offset,
+                x: scene.player.x + offset,
+                y: scene.player.y,
+                graphics: scene.add.rectangle(
+                    scene.player.x + offset,
+                    scene.player.y,
+                    GAME_CONSTANTS.PLAYER.WIDTH,
+                    GAME_CONSTANTS.PLAYER.HEIGHT,
+                    GAME_CONSTANTS.PLAYER.COLOR
+                )
+            };
+            rightClone.graphics.setStrokeStyle(3, 0x00ffff);
+            rightClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
+            scene.clones.push(rightClone);
+
+            // Show power-up message
+            GameSceneEffects.showPowerUpMessage(scene, 'CLONE!', GAME_CONSTANTS.POWERUP.CLONE.COLOR);
         }
 
         // Check for combo (both power-ups active)

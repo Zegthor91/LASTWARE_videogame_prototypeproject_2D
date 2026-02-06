@@ -56,6 +56,16 @@ const GameSceneUI = {
             `;
         }
 
+        // Clone display
+        if (scene.cloneActive) {
+            const timeLeft = Math.ceil(scene.cloneTimer / 1000);
+            powerUpsHTML += `
+                <div style="background: #00ff88; padding: 5px 10px; margin: 5px; border-radius: 5px; font-size: 14px; color: #000;">
+                    <strong>CLONE</strong> - ${timeLeft}s
+                </div>
+            `;
+        }
+
         powerUpsContainer.innerHTML = powerUpsHTML;
     },
 
