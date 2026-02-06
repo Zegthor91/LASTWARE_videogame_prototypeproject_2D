@@ -9,19 +9,25 @@ class Boss {
         this.scene = scene;
         this.x = x;
         this.y = y;
-        this.width = GAME_CONSTANTS.BOSS.WIDTH;
-        this.height = GAME_CONSTANTS.BOSS.HEIGHT;
 
         // Scale stats based on boss number (wave 10 = boss 1, wave 20 = boss 2, etc.)
         const bossNumber = Math.floor(wave / GAME_CONSTANTS.BOSS.SPAWN_INTERVAL);
         const hpBonus = (bossNumber - 1) * GAME_CONSTANTS.BOSS.HP_INCREASE_PER_BOSS;
         const speedBonus = (bossNumber - 1) * GAME_CONSTANTS.BOSS.SPEED_INCREASE_PER_BOSS;
+        const damageBonus = (bossNumber - 1) * GAME_CONSTANTS.BOSS.DAMAGE_INCREASE_PER_BOSS;
+        const sizeBonus = (bossNumber - 1) * GAME_CONSTANTS.BOSS.SIZE_INCREASE_PER_BOSS;
+        const pointsBonus = (bossNumber - 1) * GAME_CONSTANTS.BOSS.POINTS_MULTIPLIER_PER_BOSS;
 
+        // Progressive scaling
+        this.width = GAME_CONSTANTS.BOSS.WIDTH + sizeBonus;
+        this.height = GAME_CONSTANTS.BOSS.HEIGHT + sizeBonus;
         this.speed = GAME_CONSTANTS.BOSS.BASE_SPEED + speedBonus;
         this.chaseSpeed = GAME_CONSTANTS.BOSS.CHASE_SPEED + speedBonus;
         this.hp = GAME_CONSTANTS.BOSS.HP + hpBonus;
         this.maxHp = GAME_CONSTANTS.BOSS.HP + hpBonus;
-        this.damage = GAME_CONSTANTS.BOSS.DAMAGE;
+        this.damage = GAME_CONSTANTS.BOSS.DAMAGE + damageBonus;
+        this.points = GAME_CONSTANTS.BOSS.POINTS + pointsBonus;
+        this.bossNumber = bossNumber; // Store for display
 
         // Create graphics - Larger and orange
         this.graphics = scene.add.rectangle(x, y, this.width, this.height, GAME_CONSTANTS.BOSS.COLOR);
@@ -33,8 +39,9 @@ class Boss {
         // Health bar - Larger
         this.hpBar = scene.add.rectangle(x, y + 50, 70, 8, 0xff0000);
 
-        // Boss label
-        this.label = scene.add.text(x, y - 55, 'BOSS', {
+        // Boss label with level number
+        const labelText = bossNumber === 1 ? 'BOSS' : `BOSS ${bossNumber}`;
+        this.label = scene.add.text(x, y - 55, labelText, {
             fontSize: '20px',
             fill: '#ff0000',
             fontStyle: 'bold',

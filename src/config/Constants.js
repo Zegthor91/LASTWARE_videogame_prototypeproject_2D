@@ -66,12 +66,15 @@ const GAME_CONSTANTS = {
         HEIGHT: 90,
         BASE_SPEED: 50,
         CHASE_SPEED: 40,
-        HP: 100,              // Increased from 50 - much tougher
-        HP_INCREASE_PER_BOSS: 50, // +50 HP per boss encounter
-        SPEED_INCREASE_PER_BOSS: 5, // +5 speed per boss
+        HP: 100,              // Base HP for first boss
+        HP_INCREASE_PER_BOSS: 75, // +75 HP per boss (increased from 50)
+        SPEED_INCREASE_PER_BOSS: 8, // +8 speed per boss (increased from 5)
+        DAMAGE_INCREASE_PER_BOSS: 2, // +2 damage per boss (NEW)
+        SIZE_INCREASE_PER_BOSS: 10, // +10 pixels per boss (NEW)
         COLOR: 0xff6600,
         POINTS: 500,
-        DAMAGE: 5,            // Increased from 3 - more dangerous
+        POINTS_MULTIPLIER_PER_BOSS: 200, // +200 points per boss (NEW)
+        DAMAGE: 5,            // Base damage for first boss
         SPAWN_INTERVAL: 10,   // Boss every 10 waves
         // Death explosion AOE
         EXPLOSION_RADIUS: 150, // Radius of damage zone
@@ -103,8 +106,7 @@ const GAME_CONSTANTS = {
             { maxWave: 5, value: 1, color: 0x00ff00, text: '+1' },
             { maxWave: 10, value: 2, color: 0x00ff88, text: '+2' },
             { maxWave: 15, value: 3, color: 0x00ffcc, text: '+3' },
-            { maxWave: 20, value: 5, color: 0x00ffff, text: '+5' },
-            { maxWave: Infinity, value: 10, color: 0xffff00, text: '+10' }
+            { maxWave: Infinity, value: 5, color: 0x00ffff, text: '+5' }
         ]
     },
 

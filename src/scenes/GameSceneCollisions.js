@@ -44,7 +44,8 @@ const GameSceneCollisions = {
                         GameSceneEffects.createBossExplosion(scene, boss.x, boss.y);
                         boss.destroy();
                         scene.bosses.splice(bossIndex, 1);
-                        scene.score += GAME_CONSTANTS.BOSS.POINTS;
+                        // Use progressive boss points
+                        scene.score += boss.points;
                         GameSceneUI.updateUI(scene);
 
                         // Victory message
@@ -75,10 +76,11 @@ const GameSceneCollisions = {
             }
         });
 
-        // Bosses - deal more damage (shield doesn't affect boss collision)
+        // Bosses - deal progressive damage (shield doesn't affect boss collision)
         scene.bosses.forEach((boss, index) => {
             if (CollisionUtils.checkCollision(scene.player, boss)) {
-                this.playerHit(scene, GAME_CONSTANTS.BOSS.DAMAGE);
+                // Use progressive boss damage
+                this.playerHit(scene, boss.damage);
                 boss.destroy();
                 scene.bosses.splice(index, 1);
             }
@@ -121,6 +123,8 @@ const GameSceneCollisions = {
      */
     collectBonus(scene, bonus) {
         scene.playerArmy += bonus.value;
+        // Cap army at 99
+        scene.playerArmy = Math.min(scene.playerArmy, 99);
         scene.score += bonus.value * GAME_CONSTANTS.BONUS.BASE_SCORE;
         GameSceneUI.updateUI(scene);
 
