@@ -5,16 +5,22 @@
  */
 
 class Boss {
-    constructor(scene, x, y) {
+    constructor(scene, x, y, wave = 10) {
         this.scene = scene;
         this.x = x;
         this.y = y;
         this.width = GAME_CONSTANTS.BOSS.WIDTH;
         this.height = GAME_CONSTANTS.BOSS.HEIGHT;
-        this.speed = GAME_CONSTANTS.BOSS.BASE_SPEED;
-        this.chaseSpeed = GAME_CONSTANTS.BOSS.CHASE_SPEED;
-        this.hp = GAME_CONSTANTS.BOSS.HP;
-        this.maxHp = GAME_CONSTANTS.BOSS.HP;
+
+        // Scale stats based on boss number (wave 10 = boss 1, wave 20 = boss 2, etc.)
+        const bossNumber = Math.floor(wave / GAME_CONSTANTS.BOSS.SPAWN_INTERVAL);
+        const hpBonus = (bossNumber - 1) * GAME_CONSTANTS.BOSS.HP_INCREASE_PER_BOSS;
+        const speedBonus = (bossNumber - 1) * GAME_CONSTANTS.BOSS.SPEED_INCREASE_PER_BOSS;
+
+        this.speed = GAME_CONSTANTS.BOSS.BASE_SPEED + speedBonus;
+        this.chaseSpeed = GAME_CONSTANTS.BOSS.CHASE_SPEED + speedBonus;
+        this.hp = GAME_CONSTANTS.BOSS.HP + hpBonus;
+        this.maxHp = GAME_CONSTANTS.BOSS.HP + hpBonus;
         this.damage = GAME_CONSTANTS.BOSS.DAMAGE;
 
         // Create graphics - Larger and orange

@@ -37,6 +37,9 @@ const GameSceneCollisions = {
 
                     // Damage boss with bullet damage
                     if (boss.takeDamage(bullet.damage)) {
+                        // Apply AOE damage to nearby enemies
+                        GameSceneEffects.applyBossExplosionDamage(scene, boss.x, boss.y);
+
                         // Big explosion for boss death
                         GameSceneEffects.createBossExplosion(scene, boss.x, boss.y);
                         boss.destroy();

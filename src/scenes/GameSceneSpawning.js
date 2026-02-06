@@ -10,10 +10,10 @@ const GameSceneSpawning = {
      */
     spawnInitialWaves(scene) {
         setTimeout(() => {
-            scene.enemies.push(new Enemy(scene, 250, 50));
+            scene.enemies.push(new Enemy(scene, 250, 50, scene.wave));
         }, 100);
         setTimeout(() => {
-            scene.enemies.push(new Enemy(scene, 300, 50));
+            scene.enemies.push(new Enemy(scene, 300, 50, scene.wave));
         }, 700);
         setTimeout(() => {
             scene.bonuses.push(new Bonus(scene, 550, 50, scene.wave));
@@ -32,7 +32,7 @@ const GameSceneSpawning = {
                     GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MIN,
                     GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MAX
                 );
-                scene.enemies.push(new Enemy(scene, x, 50));
+                scene.enemies.push(new Enemy(scene, x, 50, scene.wave));
             }, i * GAME_CONSTANTS.SPAWN.ENEMY_SPACING);
         }
     },
@@ -73,7 +73,7 @@ const GameSceneSpawning = {
                 GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MIN + 20,
                 GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MAX - 20
             );
-            scene.bosses.push(new Boss(scene, x, 50));
+            scene.bosses.push(new Boss(scene, x, 50, scene.wave));
 
             // Boss warning flash
             scene.cameras.main.flash(500, 255, 100, 0);
@@ -110,15 +110,15 @@ const GameSceneSpawning = {
             }
         }
 
-        // Spawn enemies
+        // Spawn enemies with current wave scaling
         for (let i = 0; i < enemyCount; i++) {
             setTimeout(() => {
                 const x = Phaser.Math.Between(
                     GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MIN,
                     GAME_CONSTANTS.CORRIDOR.LEFT_SPAWN_MAX
                 );
-                scene.enemies.push(new Enemy(scene, x, 50));
-            }, i * 700);
+                scene.enemies.push(new Enemy(scene, x, 50, scene.wave));
+            }, i * GAME_CONSTANTS.SPAWN.ENEMY_SPACING);
         }
     },
 

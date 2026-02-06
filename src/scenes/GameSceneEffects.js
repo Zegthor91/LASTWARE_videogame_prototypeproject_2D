@@ -99,5 +99,71 @@ const GameSceneEffects = {
             duration: 2000,
             onComplete: () => victoryText.destroy()
         });
+    },
+
+    /**
+     * Apply AOE damage to enemies near boss explosion
+     * @param {Object} scene - Game scene
+     * @param {number} bossX - Boss X position
+     * @param {number} bossY - Boss Y position
+     * @returns {number} - Number of enemies damaged
+     */
+    applyBossExplosionDamage(scene, bossX, bossY) {
+        let enemiesDamaged = 0;
+        const radius = GAME_CONSTANTS.BOSS.EXPLOSION_RADIUS;
+        const damage = GAME_CONSTANTS.BOSS.EXPLOSION_DAMAGE;
+
+        // Visual AOE indicator
+        const aoeCircle = scene.add.circle(bossX, bossY, radius, 0xff6600, 0.4);
+        scene.tweens.add({
+            targets: aoeCircle,
+            scale: 1.5,
+            alpha: 0,
+            duration: 600,
+            onComplete: () => aoeCircle.destroy()
+        });
+
+        // Check each enemy's distance from boss
+        scene.enemies.forEach((enemy, index) => {
+            const dx = enemy.x - bossX;
+            const dy = enemy.y - bossY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance <= radius) {
+                // Enemy is in explosion radius
+                if (enemy.takeDamage(damage)) {
+                    // Enemy died from explosion
+                    this.createExplosion(scene, enemy.x, enemy.y);
+                    enemy.destroy();
+                    scene.enemies.splice(index, 1);
+                    scene.score += GAME_CONSTANTS.ENEMY.POINTS;
+                    enemiesDamaged++;
+                } else {
+                    // Enemy survived but took damage
+                    enemiesDamaged++;
+                }
+            }
+        });
+
+        // Show damage indicator if enemies were hit
+        if (enemiesDamaged > 0) {
+            const damageText = scene.add.text(bossX, bossY - 80, `${enemiesDamaged} ENEMIES HIT!`, {
+                fontSize: '20px',
+                fill: '#ff6600',
+                fontStyle: 'bold',
+                stroke: '#000000',
+                strokeThickness: 4
+            }).setOrigin(0.5);
+
+            scene.tweens.add({
+                targets: damageText,
+                y: damageText.y - 40,
+                alpha: 0,
+                duration: 1500,
+                onComplete: () => damageText.destroy()
+            });
+        }
+
+        return enemiesDamaged;
     }
 };

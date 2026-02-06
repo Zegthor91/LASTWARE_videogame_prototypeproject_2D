@@ -38,17 +38,17 @@ const GameSceneSetup = {
         const passageY = GAME_CONSTANTS.CORRIDOR.PASSAGE_Y;
         scene.add.rectangle(GAME_CONSTANTS.CORRIDOR.CENTER, passageY, 8, 54, 0x00ff00, 0.4);
 
-        scene.add.text(360, passageY - 10, 'RIGHT', { fontSize: '20px', fill: '#ffff00', fontStyle: 'bold' });
-        scene.add.text(420, passageY - 10, 'LEFT', { fontSize: '20px', fill: '#ffff00', fontStyle: 'bold' });
+        scene.add.text(460, passageY - 10, 'BONUS', { fontSize: '18px', fill: '#ffff00', fontStyle: 'bold' });
+        scene.add.text(520, passageY - 10, 'ENEMIES', { fontSize: '18px', fill: '#ffff00', fontStyle: 'bold' });
 
-        // Labels
-        scene.add.text(275, 30, 'ENEMIES', {
-            fontSize: '20px', fill: '#ff0000', fontStyle: 'bold',
+        // Labels - Adjusted for new barrier position
+        scene.add.text(330, 30, 'ENEMIES', {
+            fontSize: '26px', fill: '#ff0000', fontStyle: 'bold',
             stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5);
 
-        scene.add.text(525, 30, 'BONUS', {
-            fontSize: '20px', fill: '#00ff00', fontStyle: 'bold',
+        scene.add.text(575, 30, 'BONUS', {
+            fontSize: '18px', fill: '#00ff00', fontStyle: 'bold',
             stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5);
 

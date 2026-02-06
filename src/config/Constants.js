@@ -13,10 +13,10 @@ const GAME_CONSTANTS = {
     CORRIDOR: {
         LEFT_BORDER: 150,
         RIGHT_BORDER: 650,
-        CENTER: 400,
+        CENTER: 500,  // Moved from 400 to 500 (1/4 to the right)
         LEFT_SPAWN_MIN: 170,
-        LEFT_SPAWN_MAX: 370,
-        RIGHT_SPAWN_MIN: 430,
+        LEFT_SPAWN_MAX: 490,  // Adjusted for new center
+        RIGHT_SPAWN_MIN: 510, // Adjusted for new center
         RIGHT_SPAWN_MAX: 630,
         PASSAGE_Y: 445,
         PASSAGE_HEIGHT: 50
@@ -42,6 +42,8 @@ const GAME_CONSTANTS = {
         BASE_SPEED: 100,
         CHASE_SPEED: 80,
         HP: 3,
+        HP_INCREASE_PER_WAVE: 1,  // +1 HP per wave
+        SPEED_INCREASE_PER_WAVE: 2, // +2 speed per wave
         COLOR: 0xff0000,
         POINTS: 25
     },
@@ -52,11 +54,16 @@ const GAME_CONSTANTS = {
         HEIGHT: 90,
         BASE_SPEED: 50,
         CHASE_SPEED: 40,
-        HP: 50,
+        HP: 100,              // Increased from 50 - much tougher
+        HP_INCREASE_PER_BOSS: 50, // +50 HP per boss encounter
+        SPEED_INCREASE_PER_BOSS: 5, // +5 speed per boss
         COLOR: 0xff6600,
         POINTS: 500,
-        DAMAGE: 3, // Boss kills 3 army on hit
-        SPAWN_INTERVAL: 10 // Boss every 10 waves
+        DAMAGE: 5,            // Increased from 3 - more dangerous
+        SPAWN_INTERVAL: 10,   // Boss every 10 waves
+        // Death explosion AOE
+        EXPLOSION_RADIUS: 150, // Radius of damage zone
+        EXPLOSION_DAMAGE: 10   // Damage dealt to nearby enemies
     },
     
     // ==================== BULLET SETTINGS ====================
@@ -91,29 +98,29 @@ const GAME_CONSTANTS = {
     
     // ==================== WAVE PROGRESSION ====================
     WAVES: {
-        BASE_INTERVAL: 5000, // 5 seconds
-        MIN_INTERVAL: 3000,   // 3 seconds minimum
-        INTERVAL_REDUCTION: 100, // Per wave
-        MAX_REDUCTION: 2000,
-        
-        // Enemy count per wave range
+        BASE_INTERVAL: 4000,  // Reduced from 5000 - faster spawns
+        MIN_INTERVAL: 1500,   // Reduced from 3000 - much faster at high waves
+        INTERVAL_REDUCTION: 150, // Increased from 100 - faster acceleration
+        MAX_REDUCTION: 2500,  // Increased from 2000
+
+        // Enemy count per wave range - MORE ENEMIES
         ENEMIES_PER_WAVE: [
-            { maxWave: 3, count: 2 },
-            { maxWave: 6, count: 3 },
-            { maxWave: 10, count: 4 },
-            { maxWave: 15, count: 5 },
-            { maxWave: Infinity, count: 6 }
+            { maxWave: 2, count: 3 },   // Increased from 2
+            { maxWave: 5, count: 4 },   // Increased from 3
+            { maxWave: 8, count: 6 },   // Increased from 4
+            { maxWave: 12, count: 8 },  // Increased from 5
+            { maxWave: Infinity, count: 10 } // Increased from 6
         ],
-        
+
         // Bonus spawn chance progression
-        BASE_BONUS_CHANCE: 0.2,  // 20%
-        MAX_BONUS_CHANCE: 0.4,    // 40%
-        BONUS_CHANCE_INCREASE: 0.02 // Per wave
+        BASE_BONUS_CHANCE: 0.25,  // 25% - slightly increased
+        MAX_BONUS_CHANCE: 0.35,   // 35% - max chance
+        BONUS_CHANCE_INCREASE: 0.015 // Per wave
     },
     
     // ==================== SPAWN TIMINGS ====================
     SPAWN: {
-        ENEMY_SPACING: 700,  // milliseconds between enemies in horde
+        ENEMY_SPACING: 400,  // Reduced from 700 - enemies spawn faster in groups
         BONUS_DELAY: 1200,   // milliseconds after horde spawn
         INITIAL_HORDE_1: 100,
         INITIAL_HORDE_2: 3000,

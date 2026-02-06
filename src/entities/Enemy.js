@@ -5,16 +5,21 @@
  */
 
 class Enemy {
-    constructor(scene, x, y) {
+    constructor(scene, x, y, wave = 1) {
         this.scene = scene;
         this.x = x;
         this.y = y;
         this.width = GAME_CONSTANTS.ENEMY.WIDTH;
         this.height = GAME_CONSTANTS.ENEMY.HEIGHT;
-        this.speed = GAME_CONSTANTS.ENEMY.BASE_SPEED;
-        this.chaseSpeed = GAME_CONSTANTS.ENEMY.CHASE_SPEED;
-        this.hp = GAME_CONSTANTS.ENEMY.HP;
-        this.maxHp = GAME_CONSTANTS.ENEMY.HP;
+
+        // Scale stats based on wave
+        const hpBonus = Math.floor((wave - 1) * GAME_CONSTANTS.ENEMY.HP_INCREASE_PER_WAVE);
+        const speedBonus = Math.floor((wave - 1) * GAME_CONSTANTS.ENEMY.SPEED_INCREASE_PER_WAVE);
+
+        this.speed = GAME_CONSTANTS.ENEMY.BASE_SPEED + speedBonus;
+        this.chaseSpeed = GAME_CONSTANTS.ENEMY.CHASE_SPEED + speedBonus;
+        this.hp = GAME_CONSTANTS.ENEMY.HP + hpBonus;
+        this.maxHp = GAME_CONSTANTS.ENEMY.HP + hpBonus;
         
         // Create graphics
         this.graphics = scene.add.rectangle(x, y, this.width, this.height, GAME_CONSTANTS.ENEMY.COLOR);
