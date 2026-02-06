@@ -70,6 +70,8 @@ const GameSceneCollisions = {
                     return; // Exit early - all enemies destroyed
                 } else {
                     this.playerHit(scene, 1); // Normal enemy deals 1 damage
+                    // Deactivate clones when player is hit
+                    this.deactivateClones(scene);
                     enemy.destroy();
                     scene.enemies.splice(index, 1);
                 }
@@ -81,6 +83,8 @@ const GameSceneCollisions = {
             if (CollisionUtils.checkCollision(scene.player, boss)) {
                 // Use progressive boss damage
                 this.playerHit(scene, boss.damage);
+                // Deactivate clones when player is hit by boss
+                this.deactivateClones(scene);
                 boss.destroy();
                 scene.bosses.splice(index, 1);
             }
@@ -265,5 +269,21 @@ const GameSceneCollisions = {
 
         // Update UI
         GameSceneUI.updateUI(scene);
+    },
+
+    /**
+     * Deactivate clones power-up
+     */
+    deactivateClones(scene) {
+        if (scene.cloneActive) {
+            scene.cloneActive = false;
+            scene.cloneTimer = 0;
+            // Destroy all clones
+            scene.clones.forEach(clone => {
+                if (clone.graphics) clone.graphics.destroy();
+            });
+            scene.clones = [];
+            GameSceneUI.updateUI(scene);
+        }
     }
 };

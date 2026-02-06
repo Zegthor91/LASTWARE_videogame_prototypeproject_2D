@@ -120,12 +120,12 @@ const GameSceneSpawning = {
     },
 
     /**
-     * Spawn bonus with progressive chance
+     * Spawn bonus with progressive chance (decreases over time)
      */
     spawnBonus(scene) {
-        const bonusChance = Math.min(
-            GAME_CONSTANTS.WAVES.BASE_BONUS_CHANCE + (scene.wave * GAME_CONSTANTS.WAVES.BONUS_CHANCE_INCREASE),
-            GAME_CONSTANTS.WAVES.MAX_BONUS_CHANCE
+        const bonusChance = Math.max(
+            GAME_CONSTANTS.WAVES.BASE_BONUS_CHANCE - (scene.wave * GAME_CONSTANTS.WAVES.BONUS_CHANCE_DECREASE),
+            GAME_CONSTANTS.WAVES.MIN_BONUS_CHANCE
         );
 
         if (Math.random() < bonusChance) {
@@ -146,13 +146,18 @@ const GameSceneSpawning = {
      */
     shootBullet(scene) {
         // Calculate bullet damage based on player army
-        const bulletDamage = GAME_CONSTANTS.BULLET.BASE_DAMAGE +
-                            (scene.playerArmy * GAME_CONSTANTS.BULLET.DAMAGE_PER_ARMY);
+        let bulletDamage = GAME_CONSTANTS.BULLET.BASE_DAMAGE +
+                           (scene.playerArmy * GAME_CONSTANTS.BULLET.DAMAGE_PER_ARMY);
 
         // Check if Big Bullets power-up is active
         const sizeMultiplier = scene.bigBulletsActive
             ? GAME_CONSTANTS.POWERUP.BIG_BULLETS.SIZE_MULTIPLIER
             : 1;
+
+        // Apply damage multiplier for Big Bullets
+        if (scene.bigBulletsActive) {
+            bulletDamage *= GAME_CONSTANTS.POWERUP.BIG_BULLETS.DAMAGE_MULTIPLIER;
+        }
 
         // Fire from player
         if (scene.tripleShotActive) {

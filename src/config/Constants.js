@@ -130,6 +130,7 @@ const GAME_CONSTANTS = {
         BIG_BULLETS: {
             COLOR: 0x00ffff, // Cyan
             SIZE_MULTIPLIER: 2.5, // 2.5x bullet size
+            DAMAGE_MULTIPLIER: 1.5, // 1.5x damage boost
             ICON: 'BIG'
         },
 
@@ -171,10 +172,10 @@ const GAME_CONSTANTS = {
             { maxWave: Infinity, count: 10 } // Increased from 6
         ],
 
-        // Bonus spawn chance progression
-        BASE_BONUS_CHANCE: 0.30,  // 30% - increased spawn rate
-        MAX_BONUS_CHANCE: 0.60,   // 60% - max chance (increased from 40%)
-        BONUS_CHANCE_INCREASE: 0.02 // Per wave (increased from 0.015)
+        // Bonus spawn chance progression (decreases over time for harder gameplay)
+        BASE_BONUS_CHANCE: 0.60,  // 60% - start high for early game support
+        MIN_BONUS_CHANCE: 0.15,   // 15% - minimum chance for late game
+        BONUS_CHANCE_DECREASE: 0.02 // Per wave (decreases instead of increases)
     },
     
     // ==================== SPAWN TIMINGS ====================
