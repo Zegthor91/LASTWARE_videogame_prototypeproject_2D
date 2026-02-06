@@ -45,6 +45,19 @@ const GAME_CONSTANTS = {
         COLOR: 0xff0000,
         POINTS: 25
     },
+
+    // ==================== BOSS SETTINGS ====================
+    BOSS: {
+        WIDTH: 80,
+        HEIGHT: 90,
+        BASE_SPEED: 50,
+        CHASE_SPEED: 40,
+        HP: 50,
+        COLOR: 0xff6600,
+        POINTS: 500,
+        DAMAGE: 3, // Boss kills 3 army on hit
+        SPAWN_INTERVAL: 10 // Boss every 10 waves
+    },
     
     // ==================== BULLET SETTINGS ====================
     BULLET: {
