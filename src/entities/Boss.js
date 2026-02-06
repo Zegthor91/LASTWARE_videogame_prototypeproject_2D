@@ -116,13 +116,14 @@ class Boss {
 
     /**
      * Take damage
+     * @param {number} damage - Amount of damage to take
      * @returns {boolean} - True if boss died
      */
-    takeDamage() {
-        this.hp--;
+    takeDamage(damage = 1) {
+        this.hp -= damage;
 
         // Update health bar
-        const percent = this.hp / this.maxHp;
+        const percent = Math.max(0, this.hp / this.maxHp);
         this.hpBar.scaleX = percent;
 
         if (percent < 0.5) this.hpBar.setFillStyle(0xff6600);

@@ -100,7 +100,11 @@ class GameScene extends Phaser.Scene {
 
     handleShooting(delta) {
         this.shootTimer += delta;
-        if (this.shootTimer > GAME_CONSTANTS.BULLET.FIRE_RATE) {
+
+        // Calculate dynamic fire rate based on player army
+        const currentFireRate = GameSceneSpawning.calculateFireRate(this.playerArmy);
+
+        if (this.shootTimer > currentFireRate) {
             GameSceneSpawning.shootBullet(this);
             this.shootTimer = 0;
         }

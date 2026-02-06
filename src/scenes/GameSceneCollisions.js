@@ -17,8 +17,8 @@ const GameSceneCollisions = {
                     bullet.destroy();
                     scene.bullets.splice(bIndex, 1);
 
-                    // Damage enemy
-                    if (enemy.takeDamage()) {
+                    // Damage enemy with bullet damage
+                    if (enemy.takeDamage(bullet.damage)) {
                         GameSceneEffects.createExplosion(scene, enemy.x, enemy.y);
                         enemy.destroy();
                         scene.enemies.splice(eIndex, 1);
@@ -35,8 +35,8 @@ const GameSceneCollisions = {
                     bullet.destroy();
                     scene.bullets.splice(bIndex, 1);
 
-                    // Damage boss
-                    if (boss.takeDamage()) {
+                    // Damage boss with bullet damage
+                    if (boss.takeDamage(bullet.damage)) {
                         // Big explosion for boss death
                         GameSceneEffects.createBossExplosion(scene, boss.x, boss.y);
                         boss.destroy();

@@ -65,7 +65,13 @@ const GAME_CONSTANTS = {
         HEIGHT: 20,
         SPEED: -400, // Negative = upward
         COLOR: 0xffff00,
-        FIRE_RATE: 250 // milliseconds
+        BASE_FIRE_RATE: 250, // Base fire rate in milliseconds
+        BASE_DAMAGE: 1, // Base damage per bullet
+        // Fire rate improvement: -10ms per army point (faster shooting)
+        FIRE_RATE_DECREASE_PER_ARMY: 10,
+        MIN_FIRE_RATE: 50, // Minimum fire rate (max speed)
+        // Damage increase: +1 damage per army point
+        DAMAGE_PER_ARMY: 1
     },
     
     // ==================== BONUS SETTINGS ====================

@@ -143,9 +143,22 @@ const GameSceneSpawning = {
     },
 
     /**
-     * Shoot a bullet from player
+     * Shoot a bullet from player with damage based on army
      */
     shootBullet(scene) {
-        scene.bullets.push(new Bullet(scene, scene.player.x, scene.player.y - 30));
+        // Calculate bullet damage based on player army
+        const bulletDamage = GAME_CONSTANTS.BULLET.BASE_DAMAGE +
+                            (scene.playerArmy * GAME_CONSTANTS.BULLET.DAMAGE_PER_ARMY);
+
+        scene.bullets.push(new Bullet(scene, scene.player.x, scene.player.y - 30, bulletDamage));
+    },
+
+    /**
+     * Calculate current fire rate based on player army
+     */
+    calculateFireRate(playerArmy) {
+        const fireRate = GAME_CONSTANTS.BULLET.BASE_FIRE_RATE -
+                        (playerArmy * GAME_CONSTANTS.BULLET.FIRE_RATE_DECREASE_PER_ARMY);
+        return Math.max(fireRate, GAME_CONSTANTS.BULLET.MIN_FIRE_RATE);
     }
 };

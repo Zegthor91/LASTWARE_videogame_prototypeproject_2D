@@ -93,18 +93,19 @@ class Enemy {
     
     /**
      * Take damage
+     * @param {number} damage - Amount of damage to take
      * @returns {boolean} - True if enemy died
      */
-    takeDamage() {
-        this.hp--;
-        
+    takeDamage(damage = 1) {
+        this.hp -= damage;
+
         // Update health bar
-        const percent = this.hp / this.maxHp;
+        const percent = Math.max(0, this.hp / this.maxHp);
         this.hpBar.scaleX = percent;
-        
+
         if (percent < 0.5) this.hpBar.setFillStyle(0xffaa00);
         if (percent < 0.25) this.hpBar.setFillStyle(0xff0000);
-        
+
         // Flash effect
         this.scene.tweens.add({
             targets: this.graphics,
@@ -112,7 +113,7 @@ class Enemy {
             duration: GAME_CONSTANTS.EFFECTS.HIT_FLASH_DURATION,
             yoyo: true
         });
-        
+
         return this.hp <= 0;
     }
     
