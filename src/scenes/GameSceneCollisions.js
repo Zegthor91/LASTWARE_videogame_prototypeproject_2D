@@ -7,15 +7,24 @@
 const GameSceneCollisions = {
     /**
      * Handle bullet collisions with enemies and bosses
+     * IMPORTANT: Loop backwards to safely remove elements during iteration
      */
     handleBulletEnemyCollisions(scene) {
-        scene.bullets.forEach((bullet, bIndex) => {
+        // Loop backwards through bullets to avoid index issues when removing
+        for (let bIndex = scene.bullets.length - 1; bIndex >= 0; bIndex--) {
+            const bullet = scene.bullets[bIndex];
+            let bulletDestroyed = false;
+
             // Check enemy collisions
-            scene.enemies.forEach((enemy, eIndex) => {
+            for (let eIndex = scene.enemies.length - 1; eIndex >= 0; eIndex--) {
+                const enemy = scene.enemies[eIndex];
                 if (CollisionUtils.checkCollision(bullet, enemy)) {
                     // Destroy bullet
-                    bullet.destroy();
-                    scene.bullets.splice(bIndex, 1);
+                    if (!bulletDestroyed) {
+                        bullet.destroy();
+                        scene.bullets.splice(bIndex, 1);
+                        bulletDestroyed = true;
+                    }
 
                     // Damage enemy with bullet damage
                     if (enemy.takeDamage(bullet.damage)) {
@@ -25,35 +34,41 @@ const GameSceneCollisions = {
                         scene.score += GAME_CONSTANTS.ENEMY.POINTS;
                         GameSceneUI.updateUI(scene);
                     }
+                    break; // Bullet already destroyed, no need to check more enemies
                 }
-            });
+            }
 
-            // Check boss collisions
-            scene.bosses.forEach((boss, bossIndex) => {
-                if (CollisionUtils.checkCollision(bullet, boss)) {
-                    // Destroy bullet
-                    bullet.destroy();
-                    scene.bullets.splice(bIndex, 1);
+            // Check boss collisions only if bullet wasn't destroyed by enemy
+            if (!bulletDestroyed) {
+                for (let bossIndex = scene.bosses.length - 1; bossIndex >= 0; bossIndex--) {
+                    const boss = scene.bosses[bossIndex];
+                    if (CollisionUtils.checkCollision(bullet, boss)) {
+                        // Destroy bullet
+                        bullet.destroy();
+                        scene.bullets.splice(bIndex, 1);
+                        bulletDestroyed = true;
 
-                    // Damage boss with bullet damage
-                    if (boss.takeDamage(bullet.damage)) {
-                        // Apply AOE damage to nearby enemies
-                        GameSceneEffects.applyBossExplosionDamage(scene, boss.x, boss.y);
+                        // Damage boss with bullet damage
+                        if (boss.takeDamage(bullet.damage)) {
+                            // Apply AOE damage to nearby enemies
+                            GameSceneEffects.applyBossExplosionDamage(scene, boss.x, boss.y);
 
-                        // Big explosion for boss death
-                        GameSceneEffects.createBossExplosion(scene, boss.x, boss.y);
-                        boss.destroy();
-                        scene.bosses.splice(bossIndex, 1);
-                        // Use progressive boss points
-                        scene.score += boss.points;
-                        GameSceneUI.updateUI(scene);
+                            // Big explosion for boss death
+                            GameSceneEffects.createBossExplosion(scene, boss.x, boss.y);
+                            boss.destroy();
+                            scene.bosses.splice(bossIndex, 1);
+                            // Use progressive boss points
+                            scene.score += boss.points;
+                            GameSceneUI.updateUI(scene);
 
-                        // Victory message
-                        GameSceneEffects.showBossDefeatedMessage(scene);
+                            // Victory message
+                            GameSceneEffects.showBossDefeatedMessage(scene);
+                        }
+                        break; // Bullet already destroyed
                     }
                 }
-            });
-        });
+            }
+        }
     },
 
     /**
@@ -109,6 +124,10 @@ const GameSceneCollisions = {
      */
     playerHit(scene, damage = 1) {
         scene.playerArmy -= damage;
+
+        // Ensure army never goes below 0
+        scene.playerArmy = Math.max(0, scene.playerArmy);
+
         GameSceneUI.updateUI(scene);
 
         // Stronger shake for boss hits

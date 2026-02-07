@@ -116,6 +116,33 @@ const GameSceneUI = {
     gameOver(scene) {
         scene.gameState = 'over';
 
+        // Clean up all entities to prevent visual glitches
+        scene.bullets.forEach(bullet => bullet.destroy());
+        scene.bullets = [];
+
+        scene.enemies.forEach(enemy => enemy.destroy());
+        scene.enemies = [];
+
+        scene.bosses.forEach(boss => boss.destroy());
+        scene.bosses = [];
+
+        scene.bonuses.forEach(bonus => bonus.destroy());
+        scene.bonuses = [];
+
+        scene.powerUps.forEach(powerUp => powerUp.destroy());
+        scene.powerUps = [];
+
+        scene.clones.forEach(clone => {
+            if (clone.graphics) clone.graphics.destroy();
+        });
+        scene.clones = [];
+
+        // Remove shield visual if active
+        if (scene.shieldGraphics) {
+            scene.shieldGraphics.destroy();
+            scene.shieldGraphics = null;
+        }
+
         // Animate player death
         scene.tweens.add({
             targets: scene.player.graphics,
