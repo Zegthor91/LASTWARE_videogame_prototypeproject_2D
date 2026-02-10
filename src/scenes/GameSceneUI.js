@@ -191,10 +191,43 @@ const GameSceneUI = {
         const gameTime = document.getElementById('gameTime');
         const powerupsDisplay = document.getElementById('powerups-display');
 
-        if (armyCount) armyCount.textContent = '5';
+        if (armyCount) armyCount.textContent = '1';
         if (waveCount) waveCount.textContent = '1';
         if (scoreCount) scoreCount.textContent = '0';
         if (gameTime) gameTime.textContent = '0:00';
         if (powerupsDisplay) powerupsDisplay.innerHTML = '';
+    },
+
+    /**
+     * Display pause screen
+     */
+    showPause(scene) {
+        // Create pause overlay - similar to game over but with blue theme
+        const pauseOverlay = document.createElement('div');
+        pauseOverlay.id = 'pause-overlay';
+        pauseOverlay.innerHTML = `
+            <div style="background: rgba(0, 0, 0, 0.95); padding: 30px 80px; border-radius: 15px; border: 4px solid #0088ff; text-align: center; box-shadow: 0 0 40px rgba(0, 136, 255, 0.8);">
+                <div style="color: #0088ff; font-size: 48px; font-weight: bold; margin-bottom: 20px; text-shadow: 0 0 10px rgba(0, 136, 255, 0.8);">PAUSED</div>
+                <div style="background: #0088ff; height: 3px; margin: 15px 0;"></div>
+                <div style="font-size: 22px; color: #ff00ff; margin: 10px 0;">Score: <span style="color: #ffffff; font-weight: bold;">${scene.score}</span></div>
+                <div style="font-size: 22px; color: #ffff00; margin: 10px 0;">Wave: <span style="color: #ffffff; font-weight: bold;">${scene.wave}</span></div>
+                <div style="font-size: 22px; color: #00ff00; margin: 10px 0;">Army: <span style="color: #ffffff; font-weight: bold;">${scene.playerArmy}</span></div>
+                <div style="background: #0088ff; height: 3px; margin: 15px 0;"></div>
+                <div style="font-size: 18px; color: #00ffff; margin-top: 15px;">
+                    Press <span style="color: #fff; background: #0088ff; padding: 5px 15px; border-radius: 5px; font-weight: bold;">SPACE</span> to resume
+                </div>
+            </div>
+        `;
+        document.body.appendChild(pauseOverlay);
+    },
+
+    /**
+     * Hide pause screen
+     */
+    hidePause(scene) {
+        const pauseOverlay = document.getElementById('pause-overlay');
+        if (pauseOverlay) {
+            pauseOverlay.remove();
+        }
     }
 };

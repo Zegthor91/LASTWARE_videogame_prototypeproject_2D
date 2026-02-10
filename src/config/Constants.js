@@ -44,7 +44,7 @@ const GAME_CONSTANTS = {
         MIN_X: 60,
         MAX_X: 740,
         COLOR: 0x0088ff,
-        STARTING_ARMY: 5 // Increased from 1 to 5 for easier start
+        STARTING_ARMY: 1
     },
     
     // ==================== ENEMY SETTINGS ====================
@@ -187,9 +187,9 @@ const GAME_CONSTANTS = {
         ],
 
         // Bonus spawn chance progression (decreases over time for harder gameplay)
-        BASE_BONUS_CHANCE: 0.55,  // 55% - reduced for less frequent bonuses
-        MIN_BONUS_CHANCE: 0.08,   // 8% - reduced minimum chance for late game
-        BONUS_CHANCE_DECREASE: 0.025 // Increased from 0.015 for faster bonus decrease (especially after ~1min)
+        BASE_BONUS_CHANCE: 0.80,  // 80% - high bonus rate early game
+        MIN_BONUS_CHANCE: 0.15,   // 15% - minimum chance for late game
+        BONUS_CHANCE_DECREASE: 0.020 // Slower decrease for more bonuses throughout the game
     },
     
     // ==================== SPAWN TIMINGS ====================

@@ -80,6 +80,19 @@ class GameScene extends Phaser.Scene {
             return;
         }
 
+        // Check for pause toggle
+        if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+            if (this.gameState === 'playing') {
+                this.gameState = 'paused';
+                GameSceneUI.showPause(this);
+                return;
+            } else if (this.gameState === 'paused') {
+                this.gameState = 'playing';
+                GameSceneUI.hidePause(this);
+                return;
+            }
+        }
+
         if (this.gameState !== 'playing') return;
 
         const dt = delta / 1000; // Convert to seconds

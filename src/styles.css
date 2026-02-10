@@ -131,3 +131,12 @@ body {
     transform: translate(-50%, -50%);
     z-index: 2000;
 }
+
+/* ==================== PAUSE STYLES ==================== */
+#pause-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+}
