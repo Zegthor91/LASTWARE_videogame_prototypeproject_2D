@@ -191,7 +191,7 @@ const GameSceneUI = {
         const gameTime = document.getElementById('gameTime');
         const powerupsDisplay = document.getElementById('powerups-display');
 
-        if (armyCount) armyCount.textContent = '1';
+        if (armyCount) armyCount.textContent = '5';
         if (waveCount) waveCount.textContent = '1';
         if (scoreCount) scoreCount.textContent = '0';
         if (gameTime) gameTime.textContent = '0:00';

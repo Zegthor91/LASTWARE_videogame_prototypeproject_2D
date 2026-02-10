@@ -44,7 +44,7 @@ const GAME_CONSTANTS = {
         MIN_X: 60,
         MAX_X: 740,
         COLOR: 0x0088ff,
-        STARTING_ARMY: 1
+        STARTING_ARMY: 5 // Increased from 1 to 5 for easier start
     },
     
     // ==================== ENEMY SETTINGS ====================
@@ -53,11 +53,11 @@ const GAME_CONSTANTS = {
         HEIGHT: 45,
         BASE_SPEED: 100,
         CHASE_SPEED: 80,
-        HP: 3,
+        HP: 2, // Reduced from 3 to 2 for easier early game
         HP_INCREASE_PER_WAVE: 1,  // +1 HP per wave
         SPEED_INCREASE_PER_WAVE: 2, // +2 speed per wave
         COLOR: 0xff0000,
-        POINTS: 25
+        POINTS: 10 // Reduced from 25 to 10 for better balance
     },
 
     // ==================== BOSS SETTINGS ====================
@@ -88,12 +88,12 @@ const GAME_CONSTANTS = {
         SPEED: -400, // Negative = upward
         COLOR: 0xffff00,
         BASE_FIRE_RATE: 250, // Base fire rate in milliseconds
-        BASE_DAMAGE: 1, // Base damage per bullet
+        BASE_DAMAGE: 2, // Increased from 1 to 2 for easier start
         // Fire rate improvement: -10ms per army point (faster shooting)
         FIRE_RATE_DECREASE_PER_ARMY: 10,
         MIN_FIRE_RATE: 50, // Minimum fire rate (max speed)
-        // Damage increase: +1 damage per army point
-        DAMAGE_PER_ARMY: 1
+        // Damage increase: +0.3 damage per army point (reduced from 1 for better balance)
+        DAMAGE_PER_ARMY: 0.3
     },
     
     // ==================== BONUS SETTINGS ====================
@@ -177,19 +177,19 @@ const GAME_CONSTANTS = {
         INTERVAL_REDUCTION: 150, // Increased from 100 - faster acceleration
         MAX_REDUCTION: 2500,  // Increased from 2000
 
-        // Enemy count per wave range - MORE ENEMIES
+        // Enemy count per wave range - Progressive difficulty
         ENEMIES_PER_WAVE: [
-            { maxWave: 2, count: 3 },   // Increased from 2
-            { maxWave: 5, count: 4 },   // Increased from 3
-            { maxWave: 8, count: 6 },   // Increased from 4
-            { maxWave: 12, count: 8 },  // Increased from 5
-            { maxWave: Infinity, count: 10 } // Increased from 6
+            { maxWave: 3, count: 2 },   // Early game
+            { maxWave: 8, count: 3 },   // Gradual increase
+            { maxWave: 15, count: 4 },  // Mid-game
+            { maxWave: 25, count: 6 },  // Wave 20 now has 6 enemies instead of 10
+            { maxWave: Infinity, count: 8 } // Late game (reduced from 10 to 8)
         ],
 
         // Bonus spawn chance progression (decreases over time for harder gameplay)
-        BASE_BONUS_CHANCE: 0.60,  // 60% - start high for early game support
-        MIN_BONUS_CHANCE: 0.15,   // 15% - minimum chance for late game
-        BONUS_CHANCE_DECREASE: 0.02 // Per wave (decreases instead of increases)
+        BASE_BONUS_CHANCE: 0.55,  // 55% - reduced for less frequent bonuses
+        MIN_BONUS_CHANCE: 0.08,   // 8% - reduced minimum chance for late game
+        BONUS_CHANCE_DECREASE: 0.025 // Increased from 0.015 for faster bonus decrease (especially after ~1min)
     },
     
     // ==================== SPAWN TIMINGS ====================
