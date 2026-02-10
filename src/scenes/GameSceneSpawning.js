@@ -244,21 +244,27 @@ const GameSceneSpawning = {
 
         if (Math.random() < powerUpChance) {
             setTimeout(() => {
-                // Randomly choose between all 6 power-ups
-                const rand = Math.random();
                 let powerUpType;
-                if (rand < 0.167) {
-                    powerUpType = 'TRIPLE_SHOT';
-                } else if (rand < 0.334) {
-                    powerUpType = 'BIG_BULLETS';
-                } else if (rand < 0.501) {
-                    powerUpType = 'SHIELD_TRAP';
-                } else if (rand < 0.668) {
-                    powerUpType = 'CLONE';
-                } else if (rand < 0.835) {
-                    powerUpType = 'SPEED_BOOST';
+
+                // Check for ultra-rare JACKPOT (0.5% chance)
+                if (Math.random() < GAME_CONSTANTS.POWERUP.JACKPOT_CHANCE) {
+                    powerUpType = 'JACKPOT';
                 } else {
-                    powerUpType = 'RAPID_FIRE';
+                    // Randomly choose between regular 6 power-ups
+                    const rand = Math.random();
+                    if (rand < 0.167) {
+                        powerUpType = 'TRIPLE_SHOT';
+                    } else if (rand < 0.334) {
+                        powerUpType = 'BIG_BULLETS';
+                    } else if (rand < 0.501) {
+                        powerUpType = 'SHIELD_TRAP';
+                    } else if (rand < 0.668) {
+                        powerUpType = 'CLONE';
+                    } else if (rand < 0.835) {
+                        powerUpType = 'SPEED_BOOST';
+                    } else {
+                        powerUpType = 'RAPID_FIRE';
+                    }
                 }
 
                 // Randomly choose between left and right bonus corridors

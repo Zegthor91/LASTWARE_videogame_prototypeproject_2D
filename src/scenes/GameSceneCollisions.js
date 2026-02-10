@@ -145,10 +145,22 @@ const GameSceneCollisions = {
      * Player collects a bonus
      */
     collectBonus(scene, bonus) {
-        scene.playerArmy += bonus.value;
+        let armyGained;
+
+        if (bonus.isMultiplier) {
+            // Multiplier bonus: multiply current army
+            const oldArmy = scene.playerArmy;
+            scene.playerArmy = scene.playerArmy * bonus.value;
+            armyGained = scene.playerArmy - oldArmy;
+        } else {
+            // Regular bonus: add value
+            scene.playerArmy += bonus.value;
+            armyGained = bonus.value;
+        }
+
         // Cap army at 99
         scene.playerArmy = Math.min(scene.playerArmy, 99);
-        scene.score += bonus.value * GAME_CONSTANTS.BONUS.BASE_SCORE;
+        scene.score += armyGained * GAME_CONSTANTS.BONUS.BASE_SCORE;
         GameSceneUI.updateUI(scene);
 
         // Visual feedback
@@ -174,6 +186,114 @@ const GameSceneCollisions = {
      */
     collectPowerUp(scene, powerUp) {
         const duration = GAME_CONSTANTS.POWERUP.DURATION;
+
+        // JACKPOT - Activate all power-ups!
+        if (powerUp.type === 'JACKPOT') {
+            const jackpotDuration = GAME_CONSTANTS.POWERUP.JACKPOT.DURATION;
+
+            // Triple Shot
+            if (scene.tripleShotActive) {
+                scene.tripleShotTimer = duration; // Reset to 15s
+            } else {
+                scene.tripleShotActive = true;
+                scene.tripleShotTimer = jackpotDuration; // 7s
+            }
+
+            // Big Bullets
+            if (scene.bigBulletsActive) {
+                scene.bigBulletsTimer = duration; // Reset to 15s
+            } else {
+                scene.bigBulletsActive = true;
+                scene.bigBulletsTimer = jackpotDuration; // 7s
+            }
+
+            // Shield Trap
+            if (scene.shieldTrapActive) {
+                scene.shieldTrapTimer = duration; // Reset to 15s
+            } else {
+                scene.shieldTrapActive = true;
+                scene.shieldTrapTimer = jackpotDuration; // 7s
+                GameSceneEffects.createShieldVisual(scene);
+            }
+
+            // Clone
+            if (scene.cloneActive) {
+                scene.cloneTimer = duration; // Reset to 15s
+            } else {
+                scene.cloneActive = true;
+                scene.cloneTimer = jackpotDuration; // 7s
+
+                // Destroy existing clones if any
+                scene.clones.forEach(clone => {
+                    if (clone.graphics) clone.graphics.destroy();
+                });
+                scene.clones = [];
+
+                // Create 2 simple clones (left and right)
+                const offset = GAME_CONSTANTS.POWERUP.CLONE.OFFSET_X;
+
+                // Left clone
+                const leftClone = {
+                    offsetX: -offset,
+                    x: scene.player.x - offset,
+                    y: scene.player.y,
+                    graphics: scene.add.rectangle(
+                        scene.player.x - offset,
+                        scene.player.y,
+                        GAME_CONSTANTS.PLAYER.WIDTH,
+                        GAME_CONSTANTS.PLAYER.HEIGHT,
+                        GAME_CONSTANTS.PLAYER.COLOR
+                    )
+                };
+                leftClone.graphics.setStrokeStyle(3, 0x00ffff);
+                leftClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
+                scene.clones.push(leftClone);
+
+                // Right clone
+                const rightClone = {
+                    offsetX: offset,
+                    x: scene.player.x + offset,
+                    y: scene.player.y,
+                    graphics: scene.add.rectangle(
+                        scene.player.x + offset,
+                        scene.player.y,
+                        GAME_CONSTANTS.PLAYER.WIDTH,
+                        GAME_CONSTANTS.PLAYER.HEIGHT,
+                        GAME_CONSTANTS.PLAYER.COLOR
+                    )
+                };
+                rightClone.graphics.setStrokeStyle(3, 0x00ffff);
+                rightClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
+                scene.clones.push(rightClone);
+            }
+
+            // Speed Boost
+            if (scene.speedBoostActive) {
+                scene.speedBoostTimer = duration; // Reset to 15s
+            } else {
+                scene.speedBoostActive = true;
+                scene.speedBoostTimer = jackpotDuration; // 7s
+            }
+
+            // Rapid Fire
+            if (scene.rapidFireActive) {
+                scene.rapidFireTimer = duration; // Reset to 15s
+            } else {
+                scene.rapidFireActive = true;
+                scene.rapidFireTimer = jackpotDuration; // 7s
+            }
+
+            // Show JACKPOT message
+            GameSceneEffects.showPowerUpMessage(scene, '777 JACKPOT!!!', GAME_CONSTANTS.POWERUP.JACKPOT.COLOR);
+            scene.cameras.main.flash(500, 255, 215, 0); // Golden flash
+
+            // Visual feedback
+            GameSceneEffects.createBonusFlash(scene, powerUp);
+
+            // Update UI
+            GameSceneUI.updateUI(scene);
+            return;
+        }
 
         if (powerUp.type === 'TRIPLE_SHOT') {
             scene.tripleShotActive = true;

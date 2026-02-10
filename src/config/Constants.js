@@ -103,10 +103,12 @@ const GAME_CONSTANTS = {
         BASE_SCORE: 15,
         // Progressive values by wave
         TIERS: [
-            { maxWave: 5, value: 1, color: 0x00ff00, text: '+1' },
-            { maxWave: 10, value: 2, color: 0x00ff88, text: '+2' },
-            { maxWave: 15, value: 3, color: 0x00ffcc, text: '+3' },
-            { maxWave: Infinity, value: 5, color: 0x00ffff, text: '+5' }
+            { maxWave: 5, value: 1, color: 0x00ff00, text: '+1', isMultiplier: false },
+            { maxWave: 10, value: 2, color: 0x00ff88, text: '+2', isMultiplier: false },
+            { maxWave: 15, value: 3, color: 0x00ffcc, text: '+3', isMultiplier: false },
+            { maxWave: 40, value: 5, color: 0x00ffff, text: '+5', isMultiplier: false },
+            { maxWave: 60, value: 10, color: 0x000080, text: '+10', isMultiplier: false }, // ~2 minutes, dark blue color
+            { maxWave: Infinity, value: 2, color: 0xff00ff, text: 'x2', isMultiplier: true } // ~3 minutes, magenta multiplier
         ]
     },
 
@@ -118,6 +120,9 @@ const GAME_CONSTANTS = {
         BASE_SPAWN_CHANCE: 0.05, // 5% at wave 1
         MAX_SPAWN_CHANCE: 0.20,  // 20% maximum
         SPAWN_CHANCE_INCREASE: 0.01, // +1% per wave
+
+        // Jackpot 777 - Ultra rare power-up
+        JACKPOT_CHANCE: 0.005, // 0.5% chance when power-up spawns
 
         // Triple Shot power-up
         TRIPLE_SHOT: {
@@ -167,6 +172,13 @@ const GAME_CONSTANTS = {
             COLOR: 0xff0000, // Red
             ICON: 'RAPID',
             FIRE_RATE_MULTIPLIER: 0.5 // 2x faster shooting (50% of normal fire rate)
+        },
+
+        // Jackpot 777 - All power-ups at once!
+        JACKPOT: {
+            COLOR: 0xffd700, // Gold
+            ICON: '777',
+            DURATION: 7000 // 7 seconds (instead of 15)
         }
     },
     

@@ -13,7 +13,7 @@ class PowerUp {
         this.width = GAME_CONSTANTS.BONUS.RADIUS * 2;
         this.height = GAME_CONSTANTS.BONUS.RADIUS * 2;
         this.speed = GAME_CONSTANTS.BONUS.SPEED;
-        this.type = type; // 'TRIPLE_SHOT', 'BIG_BULLETS', 'SHIELD_TRAP', 'CLONE', 'SPEED_BOOST', or 'RAPID_FIRE'
+        this.type = type; // 'TRIPLE_SHOT', 'BIG_BULLETS', 'SHIELD_TRAP', 'CLONE', 'SPEED_BOOST', 'RAPID_FIRE', or 'JACKPOT'
 
         // Get color and icon based on type
         let config;
@@ -27,8 +27,10 @@ class PowerUp {
             config = GAME_CONSTANTS.POWERUP.CLONE;
         } else if (type === 'SPEED_BOOST') {
             config = GAME_CONSTANTS.POWERUP.SPEED_BOOST;
-        } else {
+        } else if (type === 'RAPID_FIRE') {
             config = GAME_CONSTANTS.POWERUP.RAPID_FIRE;
+        } else {
+            config = GAME_CONSTANTS.POWERUP.JACKPOT;
         }
 
         this.color = config.COLOR;
@@ -57,16 +59,41 @@ class PowerUp {
             ease: 'Linear'
         });
 
-        // Pulsing scale
-        scene.tweens.add({
-            targets: [this.graphics, this.textGraphics],
-            scaleX: 1.3,
-            scaleY: 1.3,
-            duration: 500,
-            yoyo: true,
-            repeat: -1,
-            ease: 'Sine.easeInOut'
-        });
+        // Pulsing scale - enhanced for JACKPOT
+        if (type === 'JACKPOT') {
+            // Stronger pulsing effect for jackpot
+            scene.tweens.add({
+                targets: [this.graphics, this.textGraphics],
+                scaleX: 1.6,
+                scaleY: 1.6,
+                duration: 400,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+
+            // Add golden glow effect
+            this.hitbox.setStrokeStyle(6, 0xffd700, 1);
+            scene.tweens.add({
+                targets: this.hitbox,
+                alpha: { from: 0.6, to: 1 },
+                duration: 300,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+        } else {
+            // Normal pulsing for other power-ups
+            scene.tweens.add({
+                targets: [this.graphics, this.textGraphics],
+                scaleX: 1.3,
+                scaleY: 1.3,
+                duration: 500,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+        }
     }
 
     /**

@@ -18,33 +18,48 @@ class Bonus {
         this.value = tier.value;
         this.color = tier.color;
         this.text = tier.text;
+        this.isMultiplier = tier.isMultiplier;
         
         // Create graphics
         this.graphics = scene.add.circle(x, y, GAME_CONSTANTS.BONUS.RADIUS, this.color);
         this.graphics.setStrokeStyle(3, this.color - 0x003300);
         
         this.hitbox = scene.add.circle(x, y, GAME_CONSTANTS.BONUS.RADIUS, this.color, 0);
-        this.hitbox.setStrokeStyle(2, 0xffff00);
+        this.hitbox.setStrokeStyle(2, this.color);
         
         this.textGraphics = scene.add.text(x, y, this.text, {
-            fontSize: this.value >= 5 ? '22px' : '18px',
+            fontSize: this.isMultiplier ? '24px' : (this.value >= 5 ? '22px' : '18px'),
             fill: '#fff',
             fontStyle: 'bold',
             stroke: '#000000',
-            strokeThickness: 3
+            strokeThickness: this.isMultiplier ? 5 : 3
         }).setOrigin(0.5);
-        
+
         // Animate
-        const scaleAmount = this.value >= 5 ? 1.4 : 1.3;
+        const scaleAmount = this.isMultiplier ? 1.5 : (this.value >= 5 ? 1.4 : 1.3);
+        const duration = this.isMultiplier ? 500 : 600;
         scene.tweens.add({
             targets: this.graphics,
             scaleX: scaleAmount,
             scaleY: scaleAmount,
-            duration: 600,
+            duration: duration,
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
+
+        // Add extra pulsing animation for multiplier bonuses
+        if (this.isMultiplier) {
+            scene.tweens.add({
+                targets: this.textGraphics,
+                scaleX: 1.2,
+                scaleY: 1.2,
+                duration: 400,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+        }
     }
     
     /**
