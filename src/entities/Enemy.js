@@ -1,8 +1,5 @@
-/**
- * Enemy Entity
- * Represents an enemy with AI behavior
- * KISS: Position, HP, movement toward player
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
+import { CollisionUtils } from '../utils/CollisionUtils.js';
 
 class Enemy {
     constructor(scene, x, y, wave = 1) {
@@ -158,3 +155,5 @@ class Enemy {
         if (this.hpBar) this.hpBar.destroy();
     }
 }
+
+export { Enemy };

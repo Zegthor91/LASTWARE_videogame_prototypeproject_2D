@@ -1,8 +1,4 @@
-/**
- * GameScene UI Module
- * Handles UI updates and game over screen
- * KISS: Pure UI manipulation, DOM interactions
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
 
 const GameSceneUI = {
     /**
@@ -33,7 +29,7 @@ const GameSceneUI = {
     },
 
     /**
-     * Update power-ups display showing active power-ups and timers
+     * Update power-ups display (data-driven loop)
      */
     updatePowerUpsDisplay(scene) {
         const powerUpsContainer = document.getElementById('powerups-display');
@@ -41,71 +37,24 @@ const GameSceneUI = {
 
         let powerUpsHTML = '';
 
-        // Triple Shot display
-        if (scene.tripleShotActive) {
-            const timeLeft = Math.ceil(scene.tripleShotTimer / 1000);
-            powerUpsHTML += `
-                <div style="background: rgba(0, 0, 0, 0.9); padding: 12px 15px; border-radius: 8px; font-size: 15px; border: 2px solid #ff00ff; box-shadow: 0 0 15px rgba(255, 0, 255, 0.5); min-width: 150px;">
-                    <div style="color: #ff00ff; font-weight: bold; margin-bottom: 5px;">3X SHOT</div>
-                    <div style="color: #ffffff; font-size: 13px;">${timeLeft}s</div>
-                </div>
-            `;
-        }
+        GAME_CONSTANTS.POWERUP.TYPES.forEach(type => {
+            const pu = scene.activePowerUps[type];
+            if (!pu.active) return;
 
-        // Big Bullets display
-        if (scene.bigBulletsActive) {
-            const timeLeft = Math.ceil(scene.bigBulletsTimer / 1000);
-            powerUpsHTML += `
-                <div style="background: rgba(0, 0, 0, 0.9); padding: 12px 15px; border-radius: 8px; font-size: 15px; border: 2px solid #00ffff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); min-width: 150px;">
-                    <div style="color: #00ffff; font-weight: bold; margin-bottom: 5px;">BIG BULLETS</div>
-                    <div style="color: #ffffff; font-size: 13px;">${timeLeft}s</div>
-                </div>
-            `;
-        }
+            const config = GAME_CONSTANTS.POWERUP[type];
+            const colorHex = '#' + config.COLOR.toString(16).padStart(6, '0');
+            const r = (config.COLOR >> 16) & 0xFF;
+            const g = (config.COLOR >> 8) & 0xFF;
+            const b = config.COLOR & 0xFF;
+            const timeLeft = Math.ceil(pu.timer / 1000);
 
-        // Shield Trap display
-        if (scene.shieldTrapActive) {
-            const timeLeft = Math.ceil(scene.shieldTrapTimer / 1000);
             powerUpsHTML += `
-                <div style="background: rgba(0, 0, 0, 0.9); padding: 12px 15px; border-radius: 8px; font-size: 15px; border: 2px solid #ffaa00; box-shadow: 0 0 15px rgba(255, 170, 0, 0.5); min-width: 150px;">
-                    <div style="color: #ffaa00; font-weight: bold; margin-bottom: 5px;">SHIELD TRAP</div>
+                <div style="background: rgba(0, 0, 0, 0.9); padding: 12px 15px; border-radius: 8px; font-size: 15px; border: 2px solid ${colorHex}; box-shadow: 0 0 15px rgba(${r}, ${g}, ${b}, 0.5); min-width: 150px;">
+                    <div style="color: ${colorHex}; font-weight: bold; margin-bottom: 5px;">${config.DISPLAY_NAME}</div>
                     <div style="color: #ffffff; font-size: 13px;">${timeLeft}s</div>
                 </div>
             `;
-        }
-
-        // Clone display
-        if (scene.cloneActive) {
-            const timeLeft = Math.ceil(scene.cloneTimer / 1000);
-            powerUpsHTML += `
-                <div style="background: rgba(0, 0, 0, 0.9); padding: 12px 15px; border-radius: 8px; font-size: 15px; border: 2px solid #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.5); min-width: 150px;">
-                    <div style="color: #00ff88; font-weight: bold; margin-bottom: 5px;">CLONE</div>
-                    <div style="color: #ffffff; font-size: 13px;">${timeLeft}s</div>
-                </div>
-            `;
-        }
-
-        // Speed Boost display
-        if (scene.speedBoostActive) {
-            const timeLeft = Math.ceil(scene.speedBoostTimer / 1000);
-            powerUpsHTML += `
-                <div style="background: rgba(0, 0, 0, 0.9); padding: 12px 15px; border-radius: 8px; font-size: 15px; border: 2px solid #ffff00; box-shadow: 0 0 15px rgba(255, 255, 0, 0.5); min-width: 150px;">
-                    <div style="color: #ffff00; font-weight: bold; margin-bottom: 5px;">SPEED BOOST</div>
-                    <div style="color: #ffffff; font-size: 13px;">${timeLeft}s</div>
-                </div>
-            `;
-        }
-
-        // Rapid Fire display
-        if (scene.rapidFireActive) {
-            const timeLeft = Math.ceil(scene.rapidFireTimer / 1000);
-            powerUpsHTML += `
-                <div style="background: rgba(0, 0, 0, 0.9); padding: 12px 15px; border-radius: 8px; font-size: 15px; border: 2px solid #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); min-width: 150px;">
-                    <div style="color: #ff0000; font-weight: bold; margin-bottom: 5px;">RAPID FIRE</div>
-                    <div style="color: #ffffff; font-size: 13px;">${timeLeft}s</div>
-                </div>
-            `;
-        }
+        });
 
         powerUpsContainer.innerHTML = powerUpsHTML;
     },
@@ -231,3 +180,5 @@ const GameSceneUI = {
         }
     }
 };
+
+export { GameSceneUI };

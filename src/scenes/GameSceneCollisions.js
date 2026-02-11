@@ -1,8 +1,7 @@
-/**
- * GameScene Collisions Module
- * Handles all collision detection and responses
- * KISS: Bullet/Enemy, Player/Enemy, Player/Bonus, Boss collisions
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
+import { CollisionUtils } from '../utils/CollisionUtils.js';
+import { GameSceneEffects } from './GameSceneEffects.js';
+import { GameSceneUI } from './GameSceneUI.js';
 
 const GameSceneCollisions = {
     /**
@@ -75,48 +74,46 @@ const GameSceneCollisions = {
      * Handle player collisions with enemies and bosses
      */
     handlePlayerEnemyCollisions(scene) {
-        // Normal enemies
-        scene.enemies.forEach((enemy, index) => {
+        // Normal enemies - loop backwards to safely splice
+        for (let i = scene.enemies.length - 1; i >= 0; i--) {
+            const enemy = scene.enemies[i];
             if (CollisionUtils.checkCollision(scene.player, enemy)) {
-                // Check if shield trap is active
                 if (scene.shieldTrapActive) {
-                    // SHIELD TRAP ACTIVATED - Kill all enemies!
                     this.activateShieldTrap(scene);
-                    return; // Exit early - all enemies destroyed
+                    return;
                 } else {
-                    this.playerHit(scene, 1); // Normal enemy deals 1 damage
-                    // Deactivate clones when player is hit
+                    this.playerHit(scene, 1);
                     this.deactivateClones(scene);
                     enemy.destroy();
-                    scene.enemies.splice(index, 1);
+                    scene.enemies.splice(i, 1);
                 }
             }
-        });
+        }
 
-        // Bosses - deal progressive damage (shield doesn't affect boss collision)
-        scene.bosses.forEach((boss, index) => {
+        // Bosses - loop backwards to safely splice
+        for (let i = scene.bosses.length - 1; i >= 0; i--) {
+            const boss = scene.bosses[i];
             if (CollisionUtils.checkCollision(scene.player, boss)) {
-                // Use progressive boss damage
                 this.playerHit(scene, boss.damage);
-                // Deactivate clones when player is hit by boss
                 this.deactivateClones(scene);
                 boss.destroy();
-                scene.bosses.splice(index, 1);
+                scene.bosses.splice(i, 1);
             }
-        });
+        }
     },
 
     /**
      * Handle player collisions with bonuses
      */
     handlePlayerBonusCollisions(scene) {
-        scene.bonuses.forEach((bonus, index) => {
+        for (let i = scene.bonuses.length - 1; i >= 0; i--) {
+            const bonus = scene.bonuses[i];
             if (CollisionUtils.checkCollision(scene.player, bonus)) {
                 this.collectBonus(scene, bonus);
                 bonus.destroy();
-                scene.bonuses.splice(index, 1);
+                scene.bonuses.splice(i, 1);
             }
-        });
+        }
     },
 
     /**
@@ -158,8 +155,8 @@ const GameSceneCollisions = {
             armyGained = bonus.value;
         }
 
-        // Cap army at 99
-        scene.playerArmy = Math.min(scene.playerArmy, 99);
+        // Cap army at current limit
+        scene.playerArmy = Math.min(scene.playerArmy, scene.armyCap);
         scene.score += armyGained * GAME_CONSTANTS.BONUS.BASE_SCORE;
         GameSceneUI.updateUI(scene);
 
@@ -172,224 +169,101 @@ const GameSceneCollisions = {
      * Handle player collisions with power-ups
      */
     handlePlayerPowerUpCollisions(scene) {
-        scene.powerUps.forEach((powerUp, index) => {
+        for (let i = scene.powerUps.length - 1; i >= 0; i--) {
+            const powerUp = scene.powerUps[i];
             if (CollisionUtils.checkCollision(scene.player, powerUp)) {
                 this.collectPowerUp(scene, powerUp);
                 powerUp.destroy();
-                scene.powerUps.splice(index, 1);
+                scene.powerUps.splice(i, 1);
             }
-        });
+        }
     },
 
     /**
-     * Player collects a power-up
+     * Player collects a power-up (data-driven)
      */
     collectPowerUp(scene, powerUp) {
         const duration = GAME_CONSTANTS.POWERUP.DURATION;
 
-        // JACKPOT - Activate all power-ups!
         if (powerUp.type === 'JACKPOT') {
+            // JACKPOT - Activate all power-ups
             const jackpotDuration = GAME_CONSTANTS.POWERUP.JACKPOT.DURATION;
 
-            // Triple Shot
-            if (scene.tripleShotActive) {
-                scene.tripleShotTimer = duration; // Reset to 15s
-            } else {
-                scene.tripleShotActive = true;
-                scene.tripleShotTimer = jackpotDuration; // 7s
-            }
-
-            // Big Bullets
-            if (scene.bigBulletsActive) {
-                scene.bigBulletsTimer = duration; // Reset to 15s
-            } else {
-                scene.bigBulletsActive = true;
-                scene.bigBulletsTimer = jackpotDuration; // 7s
-            }
-
-            // Shield Trap
-            if (scene.shieldTrapActive) {
-                scene.shieldTrapTimer = duration; // Reset to 15s
-            } else {
-                scene.shieldTrapActive = true;
-                scene.shieldTrapTimer = jackpotDuration; // 7s
-                GameSceneEffects.createShieldVisual(scene);
-            }
-
-            // Clone
-            if (scene.cloneActive) {
-                scene.cloneTimer = duration; // Reset to 15s
-            } else {
-                scene.cloneActive = true;
-                scene.cloneTimer = jackpotDuration; // 7s
-
-                // Destroy existing clones if any
-                scene.clones.forEach(clone => {
-                    if (clone.graphics) clone.graphics.destroy();
-                });
-                scene.clones = [];
-
-                // Create 2 simple clones (left and right)
-                const offset = GAME_CONSTANTS.POWERUP.CLONE.OFFSET_X;
-
-                // Left clone
-                const leftClone = {
-                    offsetX: -offset,
-                    x: scene.player.x - offset,
-                    y: scene.player.y,
-                    graphics: scene.add.rectangle(
-                        scene.player.x - offset,
-                        scene.player.y,
-                        GAME_CONSTANTS.PLAYER.WIDTH,
-                        GAME_CONSTANTS.PLAYER.HEIGHT,
-                        GAME_CONSTANTS.PLAYER.COLOR
-                    )
-                };
-                leftClone.graphics.setStrokeStyle(3, 0x00ffff);
-                leftClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
-                scene.clones.push(leftClone);
-
-                // Right clone
-                const rightClone = {
-                    offsetX: offset,
-                    x: scene.player.x + offset,
-                    y: scene.player.y,
-                    graphics: scene.add.rectangle(
-                        scene.player.x + offset,
-                        scene.player.y,
-                        GAME_CONSTANTS.PLAYER.WIDTH,
-                        GAME_CONSTANTS.PLAYER.HEIGHT,
-                        GAME_CONSTANTS.PLAYER.COLOR
-                    )
-                };
-                rightClone.graphics.setStrokeStyle(3, 0x00ffff);
-                rightClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
-                scene.clones.push(rightClone);
-            }
-
-            // Speed Boost
-            if (scene.speedBoostActive) {
-                scene.speedBoostTimer = duration; // Reset to 15s
-            } else {
-                scene.speedBoostActive = true;
-                scene.speedBoostTimer = jackpotDuration; // 7s
-            }
-
-            // Rapid Fire
-            if (scene.rapidFireActive) {
-                scene.rapidFireTimer = duration; // Reset to 15s
-            } else {
-                scene.rapidFireActive = true;
-                scene.rapidFireTimer = jackpotDuration; // 7s
-            }
-
-            // Show JACKPOT message
-            GameSceneEffects.showPowerUpMessage(scene, '777 JACKPOT!!!', GAME_CONSTANTS.POWERUP.JACKPOT.COLOR);
-            scene.cameras.main.flash(500, 255, 215, 0); // Golden flash
-
-            // Visual feedback
-            GameSceneEffects.createBonusFlash(scene, powerUp);
-
-            // Update UI
-            GameSceneUI.updateUI(scene);
-            return;
-        }
-
-        if (powerUp.type === 'TRIPLE_SHOT') {
-            scene.tripleShotActive = true;
-            scene.tripleShotTimer = duration;
-
-            // Show power-up message
-            GameSceneEffects.showPowerUpMessage(scene, 'TRIPLE SHOT!', GAME_CONSTANTS.POWERUP.TRIPLE_SHOT.COLOR);
-        } else if (powerUp.type === 'BIG_BULLETS') {
-            scene.bigBulletsActive = true;
-            scene.bigBulletsTimer = duration;
-
-            // Show power-up message
-            GameSceneEffects.showPowerUpMessage(scene, 'BIG BULLETS!', GAME_CONSTANTS.POWERUP.BIG_BULLETS.COLOR);
-        } else if (powerUp.type === 'SHIELD_TRAP') {
-            scene.shieldTrapActive = true;
-            scene.shieldTrapTimer = duration;
-
-            // Create shield visual
-            GameSceneEffects.createShieldVisual(scene);
-
-            // Show power-up message
-            GameSceneEffects.showPowerUpMessage(scene, 'SHIELD TRAP!', GAME_CONSTANTS.POWERUP.SHIELD_TRAP.COLOR);
-        } else if (powerUp.type === 'CLONE') {
-            scene.cloneActive = true;
-            scene.cloneTimer = duration;
-
-            // Destroy existing clones if any
-            scene.clones.forEach(clone => {
-                if (clone.graphics) clone.graphics.destroy();
+            GAME_CONSTANTS.POWERUP.TYPES.forEach(type => {
+                this._activateSinglePowerUp(scene, type,
+                    scene.activePowerUps[type].active ? duration : jackpotDuration
+                );
             });
-            scene.clones = [];
 
-            // Create 2 simple clones (left and right)
-            const offset = GAME_CONSTANTS.POWERUP.CLONE.OFFSET_X;
+            GameSceneEffects.showPowerUpMessage(scene, '777 JACKPOT!!!', GAME_CONSTANTS.POWERUP.JACKPOT.COLOR);
+            scene.cameras.main.flash(500, 255, 215, 0);
+        } else {
+            // Single power-up activation
+            this._activateSinglePowerUp(scene, powerUp.type, duration);
 
-            // Left clone
-            const leftClone = {
-                offsetX: -offset,
-                x: scene.player.x - offset,
-                y: scene.player.y,
-                graphics: scene.add.rectangle(
-                    scene.player.x - offset,
-                    scene.player.y,
-                    GAME_CONSTANTS.PLAYER.WIDTH,
-                    GAME_CONSTANTS.PLAYER.HEIGHT,
-                    GAME_CONSTANTS.PLAYER.COLOR
-                )
-            };
-            leftClone.graphics.setStrokeStyle(3, 0x00ffff);
-            leftClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
-            scene.clones.push(leftClone);
+            const config = GAME_CONSTANTS.POWERUP[powerUp.type];
+            GameSceneEffects.showPowerUpMessage(scene, config.MESSAGE, config.COLOR);
 
-            // Right clone
-            const rightClone = {
-                offsetX: offset,
-                x: scene.player.x + offset,
-                y: scene.player.y,
-                graphics: scene.add.rectangle(
-                    scene.player.x + offset,
-                    scene.player.y,
-                    GAME_CONSTANTS.PLAYER.WIDTH,
-                    GAME_CONSTANTS.PLAYER.HEIGHT,
-                    GAME_CONSTANTS.PLAYER.COLOR
-                )
-            };
-            rightClone.graphics.setStrokeStyle(3, 0x00ffff);
-            rightClone.graphics.setAlpha(GAME_CONSTANTS.POWERUP.CLONE.ALPHA);
-            scene.clones.push(rightClone);
-
-            // Show power-up message
-            GameSceneEffects.showPowerUpMessage(scene, 'CLONE!', GAME_CONSTANTS.POWERUP.CLONE.COLOR);
-        } else if (powerUp.type === 'SPEED_BOOST') {
-            scene.speedBoostActive = true;
-            scene.speedBoostTimer = duration;
-
-            // Show power-up message
-            GameSceneEffects.showPowerUpMessage(scene, 'SPEED BOOST!', GAME_CONSTANTS.POWERUP.SPEED_BOOST.COLOR);
-        } else if (powerUp.type === 'RAPID_FIRE') {
-            scene.rapidFireActive = true;
-            scene.rapidFireTimer = duration;
-
-            // Show power-up message
-            GameSceneEffects.showPowerUpMessage(scene, 'RAPID FIRE!', GAME_CONSTANTS.POWERUP.RAPID_FIRE.COLOR);
+            // Check for combo (Triple Shot + Big Bullets)
+            if (scene.activePowerUps.TRIPLE_SHOT.active && scene.activePowerUps.BIG_BULLETS.active) {
+                GameSceneEffects.showPowerUpMessage(scene, 'COMBO!!!', GAME_CONSTANTS.POWERUP.COMBO.COLOR);
+                scene.cameras.main.flash(300, 255, 255, 255);
+            }
         }
 
-        // Check for combo (both power-ups active)
-        if (scene.tripleShotActive && scene.bigBulletsActive) {
-            GameSceneEffects.showPowerUpMessage(scene, 'COMBO!!!', GAME_CONSTANTS.POWERUP.COMBO.COLOR);
-            scene.cameras.main.flash(300, 255, 255, 255);
-        }
-
-        // Visual feedback
         GameSceneEffects.createBonusFlash(scene, powerUp);
-
-        // Update UI to show active power-ups
         GameSceneUI.updateUI(scene);
+    },
+
+    /**
+     * Activate a single power-up type with given duration
+     * @private
+     */
+    _activateSinglePowerUp(scene, type, duration) {
+        const pu = scene.activePowerUps[type];
+        pu.active = true;
+        pu.timer = duration;
+
+        // Type-specific activation effects
+        if (type === 'SHIELD_TRAP') {
+            GameSceneEffects.createShieldVisual(scene);
+        }
+        if (type === 'CLONE') {
+            this._spawnClones(scene);
+        }
+    },
+
+    /**
+     * Spawn player clones (single reusable function)
+     * @private
+     */
+    _spawnClones(scene) {
+        // Destroy existing clones
+        scene.clones.forEach(clone => {
+            if (clone.graphics) clone.graphics.destroy();
+        });
+        scene.clones = [];
+
+        const offset = GAME_CONSTANTS.POWERUP.CLONE.OFFSET_X;
+        const alpha = GAME_CONSTANTS.POWERUP.CLONE.ALPHA;
+
+        [-offset, offset].forEach(offsetX => {
+            const clone = {
+                offsetX,
+                x: scene.player.x + offsetX,
+                y: scene.player.y,
+                graphics: scene.add.rectangle(
+                    scene.player.x + offsetX,
+                    scene.player.y,
+                    GAME_CONSTANTS.PLAYER.WIDTH,
+                    GAME_CONSTANTS.PLAYER.HEIGHT,
+                    GAME_CONSTANTS.PLAYER.COLOR
+                )
+            };
+            clone.graphics.setStrokeStyle(3, 0x00ffff);
+            clone.graphics.setAlpha(alpha);
+            scene.clones.push(clone);
+        });
     },
 
     /**
@@ -438,3 +312,5 @@ const GameSceneCollisions = {
         }
     }
 };
+
+export { GameSceneCollisions };

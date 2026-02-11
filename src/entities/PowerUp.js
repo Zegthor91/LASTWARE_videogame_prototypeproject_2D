@@ -1,9 +1,4 @@
-/**
- * PowerUp Entity
- * Temporary power-up that modifies player shooting, movement, or defense
- * Types: TRIPLE_SHOT, BIG_BULLETS, SHIELD_TRAP, CLONE, SPEED_BOOST, RAPID_FIRE
- * KISS: Simple collectible with type and visual distinction
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
 
 class PowerUp {
     constructor(scene, x, y, type) {
@@ -15,23 +10,8 @@ class PowerUp {
         this.speed = GAME_CONSTANTS.BONUS.SPEED;
         this.type = type; // 'TRIPLE_SHOT', 'BIG_BULLETS', 'SHIELD_TRAP', 'CLONE', 'SPEED_BOOST', 'RAPID_FIRE', or 'JACKPOT'
 
-        // Get color and icon based on type
-        let config;
-        if (type === 'TRIPLE_SHOT') {
-            config = GAME_CONSTANTS.POWERUP.TRIPLE_SHOT;
-        } else if (type === 'BIG_BULLETS') {
-            config = GAME_CONSTANTS.POWERUP.BIG_BULLETS;
-        } else if (type === 'SHIELD_TRAP') {
-            config = GAME_CONSTANTS.POWERUP.SHIELD_TRAP;
-        } else if (type === 'CLONE') {
-            config = GAME_CONSTANTS.POWERUP.CLONE;
-        } else if (type === 'SPEED_BOOST') {
-            config = GAME_CONSTANTS.POWERUP.SPEED_BOOST;
-        } else if (type === 'RAPID_FIRE') {
-            config = GAME_CONSTANTS.POWERUP.RAPID_FIRE;
-        } else {
-            config = GAME_CONSTANTS.POWERUP.JACKPOT;
-        }
+        // Get color and icon from constants (direct lookup)
+        const config = GAME_CONSTANTS.POWERUP[type] || GAME_CONSTANTS.POWERUP.JACKPOT;
 
         this.color = config.COLOR;
         this.icon = config.ICON;
@@ -93,6 +73,16 @@ class PowerUp {
                 repeat: -1,
                 ease: 'Sine.easeInOut'
             });
+
+            // Add blinking effect to hitbox for regular power-ups
+            scene.tweens.add({
+                targets: this.hitbox,
+                alpha: { from: 0.5, to: 1 },
+                duration: 400,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
         }
     }
 
@@ -149,7 +139,7 @@ class PowerUp {
      * @returns {boolean}
      */
     isOffScreen() {
-        return this.y > 650;
+        return this.y > GAME_CONSTANTS.OFFSCREEN_Y;
     }
 
     /**
@@ -161,3 +151,5 @@ class PowerUp {
         if (this.textGraphics) this.textGraphics.destroy();
     }
 }
+
+export { PowerUp };

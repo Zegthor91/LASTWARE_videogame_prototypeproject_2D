@@ -4,6 +4,8 @@
  * KISS Principle: One clear function, no over-engineering
  */
 
+import { GAME_CONSTANTS } from '../config/Constants.js';
+
 const CollisionUtils = {
     /**
      * Check if two rectangular objects overlap
@@ -29,3 +31,5 @@ const CollisionUtils = {
         return y >= passageTop && y <= passageBottom;
     }
 };
+
+export { CollisionUtils };

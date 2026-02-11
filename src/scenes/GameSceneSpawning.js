@@ -1,22 +1,25 @@
-/**
- * GameScene Spawning Module
- * Handles all entity spawning logic: enemies, bosses, bonuses
- * KISS: Clear spawn functions, separated by entity type
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
+import { Enemy } from '../entities/Enemy.js';
+import { Boss } from '../entities/Boss.js';
+import { Bullet } from '../entities/Bullet.js';
+import { Bonus } from '../entities/Bonus.js';
+import { PowerUp } from '../entities/PowerUp.js';
+import { GameSceneUI } from './GameSceneUI.js';
 
 const GameSceneSpawning = {
     /**
      * Spawn initial waves at game start
      */
     spawnInitialWaves(scene) {
+        const spawnY = GAME_CONSTANTS.SPAWN_Y;
         setTimeout(() => {
-            scene.enemies.push(new Enemy(scene, 300, 50, scene.wave));
+            scene.enemies.push(new Enemy(scene, 300, spawnY, scene.wave));
         }, 100);
         setTimeout(() => {
-            scene.enemies.push(new Enemy(scene, 500, 50, scene.wave));
+            scene.enemies.push(new Enemy(scene, 500, spawnY, scene.wave));
         }, 700);
         setTimeout(() => {
-            scene.bonuses.push(new Bonus(scene, 90, 50, scene.wave));
+            scene.bonuses.push(new Bonus(scene, 90, spawnY, scene.wave));
         }, 2000);
     },
 
@@ -28,9 +31,8 @@ const GameSceneSpawning = {
 
         for (let i = 0; i < count; i++) {
             setTimeout(() => {
-                // Spawn in central enemy corridor
                 const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.ENEMY_MIN, GAME_CONSTANTS.CORRIDOR.ENEMY_MAX);
-                scene.enemies.push(new Enemy(scene, x, 50, scene.wave));
+                scene.enemies.push(new Enemy(scene, x, GAME_CONSTANTS.SPAWN_Y, scene.wave));
             }, i * GAME_CONSTANTS.SPAWN.ENEMY_SPACING);
         }
     },
@@ -39,24 +41,19 @@ const GameSceneSpawning = {
      * Spawn continuous wave based on current wave number
      */
     spawnContinuousWave(scene) {
-        // Calculate difficulty
         const intervalReduction = Math.min(
             scene.wave * GAME_CONSTANTS.WAVES.INTERVAL_REDUCTION,
             GAME_CONSTANTS.WAVES.MAX_REDUCTION
         );
         const spawnInterval = GAME_CONSTANTS.WAVES.BASE_INTERVAL - intervalReduction;
 
-        // Check if it's a boss wave (every 10 waves)
         if (scene.wave % GAME_CONSTANTS.BOSS.SPAWN_INTERVAL === 0) {
             this.spawnBoss(scene);
         } else {
             this.spawnRegularEnemies(scene);
         }
 
-        // Spawn bonus
         this.spawnBonus(scene);
-
-        // Spawn power-up (random chance)
         this.spawnPowerUp(scene);
 
         scene.wave++;
@@ -70,25 +67,25 @@ const GameSceneSpawning = {
      */
     spawnBoss(scene) {
         setTimeout(() => {
-            // Spawn in central enemy corridor
             const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.ENEMY_MIN + 20, GAME_CONSTANTS.CORRIDOR.ENEMY_MAX - 20);
-            scene.bosses.push(new Boss(scene, x, 50, scene.wave));
+            scene.bosses.push(new Boss(scene, x, GAME_CONSTANTS.SPAWN_Y, scene.wave));
 
-            // Boss warning flash
             scene.cameras.main.flash(500, 255, 100, 0);
 
-            // Display boss message
-            const bossText = scene.add.text(400, 300, 'BOSS WAVE!', {
-                fontSize: '48px',
-                fill: '#ff0000',
-                fontStyle: 'bold',
-                stroke: '#000000',
-                strokeThickness: 6
-            }).setOrigin(0.5);
+            const bossText = scene.add.text(
+                GAME_CONSTANTS.GAME_WIDTH / 2,
+                GAME_CONSTANTS.GAME_HEIGHT / 2,
+                'BOSS WAVE!', {
+                    fontSize: '48px',
+                    fill: '#ff0000',
+                    fontStyle: 'bold',
+                    stroke: '#000000',
+                    strokeThickness: 6
+                }).setOrigin(0.5);
 
             scene.tweens.add({
                 targets: bossText,
-                y: 250,
+                y: bossText.y - 50,
                 alpha: 0,
                 duration: 2000,
                 onComplete: () => bossText.destroy()
@@ -100,7 +97,6 @@ const GameSceneSpawning = {
      * Spawn regular enemies based on wave tier
      */
     spawnRegularEnemies(scene) {
-        // Enemy count based on wave
         let enemyCount = 2;
         for (const tier of GAME_CONSTANTS.WAVES.ENEMIES_PER_WAVE) {
             if (scene.wave <= tier.maxWave) {
@@ -109,12 +105,10 @@ const GameSceneSpawning = {
             }
         }
 
-        // Spawn enemies with current wave scaling
         for (let i = 0; i < enemyCount; i++) {
             setTimeout(() => {
-                // Spawn in central enemy corridor
                 const x = Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.ENEMY_MIN, GAME_CONSTANTS.CORRIDOR.ENEMY_MAX);
-                scene.enemies.push(new Enemy(scene, x, 50, scene.wave));
+                scene.enemies.push(new Enemy(scene, x, GAME_CONSTANTS.SPAWN_Y, scene.wave));
             }, i * GAME_CONSTANTS.SPAWN.ENEMY_SPACING);
         }
     },
@@ -130,83 +124,61 @@ const GameSceneSpawning = {
 
         if (Math.random() < bonusChance) {
             setTimeout(() => {
-                // Randomly choose between left and right bonus corridors
-                const useLeftCorridor = Math.random() < 0.5;
-                const x = useLeftCorridor
-                    ? Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MAX)
-                    : Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MAX);
-                scene.bonuses.push(new Bonus(scene, x, 50, scene.wave));
+                const x = this._randomCorridorX();
+                scene.bonuses.push(new Bonus(scene, x, GAME_CONSTANTS.SPAWN_Y, scene.wave));
             }, GAME_CONSTANTS.SPAWN.BONUS_DELAY);
         }
     },
 
     /**
-     * Shoot a bullet from player with damage based on army
+     * Shoot bullets from player (and clones if active)
      * Handles power-ups: Triple Shot, Big Bullets, and Combo
      */
     shootBullet(scene) {
-        // Calculate bullet damage based on player army
         let bulletDamage = GAME_CONSTANTS.BULLET.BASE_DAMAGE +
                            (scene.playerArmy * GAME_CONSTANTS.BULLET.DAMAGE_PER_ARMY);
 
-        // Check if Big Bullets power-up is active
         const sizeMultiplier = scene.bigBulletsActive
             ? GAME_CONSTANTS.POWERUP.BIG_BULLETS.SIZE_MULTIPLIER
             : 1;
 
-        // Apply damage multiplier for Big Bullets
         if (scene.bigBulletsActive) {
             bulletDamage *= GAME_CONSTANTS.POWERUP.BIG_BULLETS.DAMAGE_MULTIPLIER;
         }
 
         // Fire from player
-        if (scene.tripleShotActive) {
-            // Fire 3 bullets at different angles
-            const angleSpread = GAME_CONSTANTS.POWERUP.TRIPLE_SHOT.ANGLE_SPREAD;
-
-            // Center bullet
-            const centerBullet = new Bullet(scene, scene.player.x, scene.player.y - 30, bulletDamage, sizeMultiplier);
-            scene.bullets.push(centerBullet);
-
-            // Left diagonal bullet
-            const leftBullet = new Bullet(scene, scene.player.x - 10, scene.player.y - 30, bulletDamage, sizeMultiplier);
-            this._addBulletVelocity(leftBullet, -angleSpread);
-            scene.bullets.push(leftBullet);
-
-            // Right diagonal bullet
-            const rightBullet = new Bullet(scene, scene.player.x + 10, scene.player.y - 30, bulletDamage, sizeMultiplier);
-            this._addBulletVelocity(rightBullet, angleSpread);
-            scene.bullets.push(rightBullet);
-        } else {
-            // Normal single bullet
-            scene.bullets.push(new Bullet(scene, scene.player.x, scene.player.y - 30, bulletDamage, sizeMultiplier));
-        }
+        this._fireBulletsFrom(scene, scene.player.x, scene.player.y, bulletDamage, sizeMultiplier);
 
         // Fire from clones if active
         if (scene.cloneActive && scene.clones.length > 0) {
             scene.clones.forEach(clone => {
-                if (scene.tripleShotActive) {
-                    // Fire 3 bullets at different angles from clone
-                    const angleSpread = GAME_CONSTANTS.POWERUP.TRIPLE_SHOT.ANGLE_SPREAD;
-
-                    // Center bullet
-                    const centerBullet = new Bullet(scene, clone.x, clone.y - 30, bulletDamage, sizeMultiplier);
-                    scene.bullets.push(centerBullet);
-
-                    // Left diagonal bullet
-                    const leftBullet = new Bullet(scene, clone.x - 10, clone.y - 30, bulletDamage, sizeMultiplier);
-                    this._addBulletVelocity(leftBullet, -angleSpread);
-                    scene.bullets.push(leftBullet);
-
-                    // Right diagonal bullet
-                    const rightBullet = new Bullet(scene, clone.x + 10, clone.y - 30, bulletDamage, sizeMultiplier);
-                    this._addBulletVelocity(rightBullet, angleSpread);
-                    scene.bullets.push(rightBullet);
-                } else {
-                    // Normal single bullet from clone
-                    scene.bullets.push(new Bullet(scene, clone.x, clone.y - 30, bulletDamage, sizeMultiplier));
-                }
+                this._fireBulletsFrom(scene, clone.x, clone.y, bulletDamage, sizeMultiplier);
             });
+        }
+    },
+
+    /**
+     * Fire bullets from a given position (reused for player and clones)
+     * @private
+     */
+    _fireBulletsFrom(scene, x, y, damage, sizeMultiplier) {
+        const bulletY = y - GAME_CONSTANTS.BULLET_OFFSET_Y;
+
+        if (scene.tripleShotActive) {
+            const angleSpread = GAME_CONSTANTS.POWERUP.TRIPLE_SHOT.ANGLE_SPREAD;
+
+            const centerBullet = new Bullet(scene, x, bulletY, damage, sizeMultiplier);
+            scene.bullets.push(centerBullet);
+
+            const leftBullet = new Bullet(scene, x - 10, bulletY, damage, sizeMultiplier);
+            this._addBulletVelocity(leftBullet, -angleSpread);
+            scene.bullets.push(leftBullet);
+
+            const rightBullet = new Bullet(scene, x + 10, bulletY, damage, sizeMultiplier);
+            this._addBulletVelocity(rightBullet, angleSpread);
+            scene.bullets.push(rightBullet);
+        } else {
+            scene.bullets.push(new Bullet(scene, x, bulletY, damage, sizeMultiplier));
         }
     },
 
@@ -218,7 +190,6 @@ const GameSceneSpawning = {
         const angleRad = (angleDegrees * Math.PI) / 180;
         const speedMagnitude = Math.abs(GAME_CONSTANTS.BULLET.SPEED);
 
-        // Calculate velocity components
         bullet.velocityX = Math.sin(angleRad) * speedMagnitude;
         bullet.velocityY = -Math.cos(angleRad) * speedMagnitude;
     },
@@ -236,7 +207,6 @@ const GameSceneSpawning = {
      * Spawn a power-up with progressive chance (increases with waves)
      */
     spawnPowerUp(scene) {
-        // Calculate progressive power-up chance
         const powerUpChance = Math.min(
             GAME_CONSTANTS.POWERUP.BASE_SPAWN_CHANCE + (scene.wave * GAME_CONSTANTS.POWERUP.SPAWN_CHANCE_INCREASE),
             GAME_CONSTANTS.POWERUP.MAX_SPAWN_CHANCE
@@ -246,34 +216,30 @@ const GameSceneSpawning = {
             setTimeout(() => {
                 let powerUpType;
 
-                // Check for ultra-rare JACKPOT (0.5% chance)
                 if (Math.random() < GAME_CONSTANTS.POWERUP.JACKPOT_CHANCE) {
                     powerUpType = 'JACKPOT';
                 } else {
-                    // Randomly choose between regular 6 power-ups
-                    const rand = Math.random();
-                    if (rand < 0.167) {
-                        powerUpType = 'TRIPLE_SHOT';
-                    } else if (rand < 0.334) {
-                        powerUpType = 'BIG_BULLETS';
-                    } else if (rand < 0.501) {
-                        powerUpType = 'SHIELD_TRAP';
-                    } else if (rand < 0.668) {
-                        powerUpType = 'CLONE';
-                    } else if (rand < 0.835) {
-                        powerUpType = 'SPEED_BOOST';
-                    } else {
-                        powerUpType = 'RAPID_FIRE';
-                    }
+                    // Use TYPES array for equal-weight random selection
+                    const types = GAME_CONSTANTS.POWERUP.TYPES;
+                    powerUpType = types[Math.floor(Math.random() * types.length)];
                 }
 
-                // Randomly choose between left and right bonus corridors
-                const useLeftCorridor = Math.random() < 0.5;
-                const x = useLeftCorridor
-                    ? Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MAX)
-                    : Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MAX);
-                scene.powerUps.push(new PowerUp(scene, x, 50, powerUpType));
+                const x = this._randomCorridorX();
+                scene.powerUps.push(new PowerUp(scene, x, GAME_CONSTANTS.SPAWN_Y, powerUpType));
             }, GAME_CONSTANTS.SPAWN.BONUS_DELAY);
         }
+    },
+
+    /**
+     * Pick a random X in left or right bonus corridor
+     * @private
+     */
+    _randomCorridorX() {
+        const useLeft = Math.random() < 0.5;
+        return useLeft
+            ? Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.LEFT_BONUS_MAX)
+            : Phaser.Math.Between(GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MIN, GAME_CONSTANTS.CORRIDOR.RIGHT_BONUS_MAX);
     }
 };
+
+export { GameSceneSpawning };

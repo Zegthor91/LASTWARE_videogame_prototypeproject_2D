@@ -1,8 +1,4 @@
-/**
- * GameScene Effects Module
- * Handles all visual effects: explosions, flashes, floating text
- * KISS: Pure visual feedback, no game logic
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
 
 const GameSceneEffects = {
     /**
@@ -123,27 +119,23 @@ const GameSceneEffects = {
             onComplete: () => aoeCircle.destroy()
         });
 
-        // Check each enemy's distance from boss
-        scene.enemies.forEach((enemy, index) => {
+        // Check each enemy's distance from boss - loop backwards to safely splice
+        for (let i = scene.enemies.length - 1; i >= 0; i--) {
+            const enemy = scene.enemies[i];
             const dx = enemy.x - bossX;
             const dy = enemy.y - bossY;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance <= radius) {
-                // Enemy is in explosion radius
                 if (enemy.takeDamage(damage)) {
-                    // Enemy died from explosion
                     this.createExplosion(scene, enemy.x, enemy.y);
                     enemy.destroy();
-                    scene.enemies.splice(index, 1);
+                    scene.enemies.splice(i, 1);
                     scene.score += GAME_CONSTANTS.ENEMY.POINTS;
-                    enemiesDamaged++;
-                } else {
-                    // Enemy survived but took damage
-                    enemiesDamaged++;
                 }
+                enemiesDamaged++;
             }
-        });
+        }
 
         // Show damage indicator if enemies were hit
         if (enemiesDamaged > 0) {
@@ -285,3 +277,5 @@ const GameSceneEffects = {
         });
     }
 };
+
+export { GameSceneEffects };

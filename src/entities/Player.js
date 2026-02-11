@@ -1,8 +1,5 @@
-/**
- * Player Entity
- * Represents the player character
- * KISS: Simple object with position, movement, and rendering
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
+import { CollisionUtils } from '../utils/CollisionUtils.js';
 
 class Player {
     constructor(scene, x, y) {
@@ -91,3 +88,5 @@ class Player {
         }
     }
 }
+
+export { Player };

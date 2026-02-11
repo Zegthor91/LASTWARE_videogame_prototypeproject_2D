@@ -1,8 +1,4 @@
-/**
- * Bonus Entity
- * Collectible that increases player army
- * KISS: Progressive value based on wave number
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
 
 class Bonus {
     constructor(scene, x, y, wave) {
@@ -23,9 +19,8 @@ class Bonus {
         // Create graphics
         this.graphics = scene.add.circle(x, y, GAME_CONSTANTS.BONUS.RADIUS, this.color);
         this.graphics.setStrokeStyle(3, this.color - 0x003300);
-        
+
         this.hitbox = scene.add.circle(x, y, GAME_CONSTANTS.BONUS.RADIUS, this.color, 0);
-        this.hitbox.setStrokeStyle(2, this.color);
         
         this.textGraphics = scene.add.text(x, y, this.text, {
             fontSize: this.isMultiplier ? '24px' : (this.value >= 5 ? '22px' : '18px'),
@@ -94,7 +89,7 @@ class Bonus {
      * @returns {boolean}
      */
     isOffScreen() {
-        return this.y > 650;
+        return this.y > GAME_CONSTANTS.OFFSCREEN_Y;
     }
     
     /**
@@ -106,3 +101,5 @@ class Bonus {
         if (this.textGraphics) this.textGraphics.destroy();
     }
 }
+
+export { Bonus };

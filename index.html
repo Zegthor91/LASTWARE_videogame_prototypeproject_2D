@@ -37,31 +37,8 @@
     </div>
 
     <div id="game-container"></div>
-    
-    <!-- Game Configuration -->
-    <script src="src/config/Constants.js"></script>
-    <script src="src/config/GameConfig.js"></script>
-    
-    <!-- Utilities -->
-    <script src="src/utils/CollisionUtils.js"></script>
-    
-    <!-- Entities -->
-    <script src="src/entities/Player.js"></script>
-    <script src="src/entities/Enemy.js"></script>
-    <script src="src/entities/Boss.js"></script>
-    <script src="src/entities/Bullet.js"></script>
-    <script src="src/entities/Bonus.js"></script>
-    <script src="src/entities/PowerUp.js"></script>
 
-    <!-- Scene Modules -->
-    <script src="src/scenes/GameSceneSetup.js"></script>
-    <script src="src/scenes/GameSceneSpawning.js"></script>
-    <script src="src/scenes/GameSceneCollisions.js"></script>
-    <script src="src/scenes/GameSceneEffects.js"></script>
-    <script src="src/scenes/GameSceneUI.js"></script>
-    <script src="src/scenes/GameScene.js"></script>
-
-    <!-- Main Game Entry Point -->
-    <script src="src/main.js"></script>
+    <!-- Phaser loaded as global, game code as ES modules -->
+    <script type="module" src="src/main.js"></script>
 </body>
 </html>

@@ -1,8 +1,5 @@
-/**
- * GameScene Setup Module
- * Handles initial scene creation: background, barriers, stars, player
- * KISS: Pure setup functions, no game logic
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
+import { Player } from '../entities/Player.js';
 
 const GameSceneSetup = {
     /**
@@ -109,3 +106,5 @@ const GameSceneSetup = {
         );
     }
 };
+
+export { GameSceneSetup };

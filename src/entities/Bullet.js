@@ -1,8 +1,4 @@
-/**
- * Bullet Entity
- * Projectile with variable damage based on player army
- * KISS: Position, speed, damage, visual representation
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
 
 class Bullet {
     constructor(scene, x, y, damage = 1, sizeMultiplier = 1) {
@@ -81,3 +77,5 @@ class Bullet {
         if (this.hitbox) this.hitbox.destroy();
     }
 }
+
+export { Bullet };

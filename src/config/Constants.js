@@ -8,6 +8,16 @@ const GAME_CONSTANTS = {
     // ==================== GAME DIMENSIONS ====================
     GAME_WIDTH: 800,
     GAME_HEIGHT: 600,
+    OFFSCREEN_Y: 650,   // Y threshold for off-screen cleanup
+    SPAWN_Y: 50,        // Y position where entities spawn
+    BULLET_OFFSET_Y: 30, // Bullet spawn offset from player
+
+    // ==================== ARMY CAP ====================
+    ARMY_CAP: {
+        STARTING: 99,
+        INCREASE: 100,
+        INTERVAL: 180000 // 3 minutes in ms
+    },
 
     // ==================== CORRIDOR LAYOUT ====================
     CORRIDOR: {
@@ -124,11 +134,16 @@ const GAME_CONSTANTS = {
         // Jackpot 777 - Ultra rare power-up
         JACKPOT_CHANCE: 0.005, // 0.5% chance when power-up spawns
 
+        // Power-up types list (for random selection and data-driven logic)
+        TYPES: ['TRIPLE_SHOT', 'BIG_BULLETS', 'SHIELD_TRAP', 'CLONE', 'SPEED_BOOST', 'RAPID_FIRE'],
+
         // Triple Shot power-up
         TRIPLE_SHOT: {
             COLOR: 0xff00ff, // Magenta
             ANGLE_SPREAD: 15, // Degrees from center
-            ICON: '3X'
+            ICON: '3X',
+            DISPLAY_NAME: '3X SHOT',
+            MESSAGE: 'TRIPLE SHOT!'
         },
 
         // Big Bullets power-up
@@ -136,7 +151,9 @@ const GAME_CONSTANTS = {
             COLOR: 0x00ffff, // Cyan
             SIZE_MULTIPLIER: 2.5, // 2.5x bullet size
             DAMAGE_MULTIPLIER: 1.5, // 1.5x damage boost
-            ICON: 'BIG'
+            ICON: 'BIG',
+            DISPLAY_NAME: 'BIG BULLETS',
+            MESSAGE: 'BIG BULLETS!'
         },
 
         // Combo bonus when both active
@@ -149,36 +166,44 @@ const GAME_CONSTANTS = {
         SHIELD_TRAP: {
             COLOR: 0xffaa00, // Orange
             ICON: 'SHIELD',
-            SHIELD_RADIUS: 35 // Visual shield radius around player
+            SHIELD_RADIUS: 35,
+            DISPLAY_NAME: 'SHIELD TRAP',
+            MESSAGE: 'SHIELD TRAP!'
         },
 
         // Clone power-up
         CLONE: {
             COLOR: 0x00ff88, // Green-cyan
             ICON: 'CLONE',
-            OFFSET_X: 60, // Distance from player in pixels
-            ALPHA: 0.7 // Clone transparency
+            OFFSET_X: 60,
+            ALPHA: 0.7,
+            DISPLAY_NAME: 'CLONE',
+            MESSAGE: 'CLONE!'
         },
 
         // Speed Boost power-up
         SPEED_BOOST: {
             COLOR: 0xffff00, // Yellow
             ICON: 'SPEED',
-            SPEED_MULTIPLIER: 1.75 // 1.75x movement speed
+            SPEED_MULTIPLIER: 1.75,
+            DISPLAY_NAME: 'SPEED BOOST',
+            MESSAGE: 'SPEED BOOST!'
         },
 
         // Rapid Fire power-up
         RAPID_FIRE: {
             COLOR: 0xff0000, // Red
             ICON: 'RAPID',
-            FIRE_RATE_MULTIPLIER: 0.5 // 2x faster shooting (50% of normal fire rate)
+            FIRE_RATE_MULTIPLIER: 0.5,
+            DISPLAY_NAME: 'RAPID FIRE',
+            MESSAGE: 'RAPID FIRE!'
         },
 
         // Jackpot 777 - All power-ups at once!
         JACKPOT: {
             COLOR: 0xffd700, // Gold
             ICON: '777',
-            DURATION: 7000 // 7 seconds (instead of 15)
+            DURATION: 7000
         }
     },
     
@@ -237,5 +262,16 @@ const GAME_CONSTANTS = {
     }
 };
 
-// Freeze object to prevent accidental modifications
-Object.freeze(GAME_CONSTANTS);
+// Deep freeze to prevent accidental modifications
+function deepFreeze(obj) {
+    Object.freeze(obj);
+    Object.values(obj).forEach(val => {
+        if (val && typeof val === 'object' && !Object.isFrozen(val)) {
+            deepFreeze(val);
+        }
+    });
+    return obj;
+}
+deepFreeze(GAME_CONSTANTS);
+
+export { GAME_CONSTANTS };

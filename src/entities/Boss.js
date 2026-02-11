@@ -1,8 +1,5 @@
-/**
- * Boss Entity
- * Large enemy with high HP that spawns every 10 waves
- * KISS: Same AI as Enemy but bigger, slower, stronger
- */
+import { GAME_CONSTANTS } from '../config/Constants.js';
+import { CollisionUtils } from '../utils/CollisionUtils.js';
 
 class Boss {
     constructor(scene, x, y, wave = 10) {
@@ -190,3 +187,5 @@ class Boss {
         if (this.label) this.label.destroy();
     }
 }
+
+export { Boss };
