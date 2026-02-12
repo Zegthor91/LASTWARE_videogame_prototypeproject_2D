@@ -17,6 +17,8 @@ class Enemy {
         this.chaseSpeed = GAME_CONSTANTS.ENEMY.CHASE_SPEED + speedBonus;
         this.hp = GAME_CONSTANTS.ENEMY.HP + hpBonus;
         this.maxHp = GAME_CONSTANTS.ENEMY.HP + hpBonus;
+        this.damage = GAME_CONSTANTS.ENEMY.DAMAGE +
+            Math.floor(wave / GAME_CONSTANTS.ENEMY.DAMAGE_INCREASE_INTERVAL) * GAME_CONSTANTS.ENEMY.DAMAGE_INCREASE;
         
         // Create graphics
         this.graphics = scene.add.rectangle(x, y, this.width, this.height, GAME_CONSTANTS.ENEMY.COLOR);

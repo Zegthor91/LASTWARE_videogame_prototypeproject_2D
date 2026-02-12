@@ -67,7 +67,10 @@ const GAME_CONSTANTS = {
         HP_INCREASE_PER_WAVE: 1,  // +1 HP per wave
         SPEED_INCREASE_PER_WAVE: 2, // +2 speed per wave
         COLOR: 0xff0000,
-        POINTS: 10 // Reduced from 25 to 10 for better balance
+        POINTS: 10, // Reduced from 25 to 10 for better balance
+        DAMAGE: 1,                     // Base damage to player
+        DAMAGE_INCREASE_INTERVAL: 100, // +1 damage every 100 waves
+        DAMAGE_INCREASE: 1             // Amount of damage added per interval
     },
 
     // ==================== BOSS SETTINGS ====================

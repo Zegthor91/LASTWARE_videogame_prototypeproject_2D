@@ -82,7 +82,7 @@ const GameSceneCollisions = {
                     this.activateShieldTrap(scene);
                     return;
                 } else {
-                    this.playerHit(scene, 1);
+                    this.playerHit(scene, enemy.damage);
                     this.deactivateClones(scene);
                     enemy.destroy();
                     scene.enemies.splice(i, 1);

@@ -275,6 +275,47 @@ const GameSceneEffects = {
                 countText.destroy();
             }
         });
+    },
+
+    /**
+     * Show army cap increase notification
+     */
+    showArmyCapIncrease(scene, newCap) {
+        scene.cameras.main.flash(300, 0, 200, 255);
+
+        const capText = scene.add.text(
+            GAME_CONSTANTS.GAME_WIDTH / 2,
+            GAME_CONSTANTS.GAME_HEIGHT / 2 - 30,
+            `ARMY CAP INCREASED!`, {
+                fontSize: '32px',
+                fill: '#00ccff',
+                fontStyle: 'bold',
+                stroke: '#000000',
+                strokeThickness: 6
+            }).setOrigin(0.5);
+
+        const valueText = scene.add.text(
+            GAME_CONSTANTS.GAME_WIDTH / 2,
+            GAME_CONSTANTS.GAME_HEIGHT / 2 + 10,
+            `New Limit: ${newCap}`, {
+                fontSize: '24px',
+                fill: '#88ddff',
+                fontStyle: 'bold',
+                stroke: '#000000',
+                strokeThickness: 4
+            }).setOrigin(0.5);
+
+        scene.tweens.add({
+            targets: [capText, valueText],
+            y: '-=50',
+            alpha: 0,
+            duration: 2000,
+            ease: 'Cubic.easeOut',
+            onComplete: () => {
+                capText.destroy();
+                valueText.destroy();
+            }
+        });
     }
 };
 
